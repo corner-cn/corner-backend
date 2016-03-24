@@ -1,0 +1,97 @@
+#%RAML 1.0
+title: corner
+version: v1
+baseUri: https://ijiejiao.cn
+mediaType: text/html; charset=utf-8
+protocols:
+  - HTTPS
+types:
+  TestType:
+    type: object
+    properties:
+      id: number
+      optional?: string
+      expanded:
+        type: object
+        properties:
+          count: number
+/booth:
+  displayName: booth
+  description: Get all booths according to query
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+    queryParameters:
+      longitude:
+        type:
+          - number
+      latitude:
+        type:
+          - number
+      district:
+        type:
+          - string
+      type:
+        type:
+          - string
+      search:
+        type:
+          - string
+  post:
+    responses:
+      200:
+    body:
+      application/json:
+        properties:
+          longitude:
+            type:
+              - number
+          latitude:
+            type:
+              - number
+          location:
+            type:
+              - string
+          story:
+            type:
+              - string
+          description:
+            type:
+              - string
+          reporter:
+            type:
+              - string
+  put:
+    responses:
+      200:
+    body:
+      multipart/form-data:
+        properties:
+          img:
+            type:
+              - file
+/booth/{id}:
+  displayName: getBoothByID
+  description: Get booth info from id
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+    queryParameters:
+      token:
+        type:
+          - string
+/img/{scale}/{boothid}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
