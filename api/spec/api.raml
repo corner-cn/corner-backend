@@ -89,6 +89,17 @@ types:
       token:
         type:
           - string
+  post:
+    displayName: likeAction
+    description: User action like "like" or "dislike"
+    responses:
+      200:
+        body:
+          application/json:
+            properties:
+              acton:
+                type:
+                  - number
 /img/{scale}/{boothid}:
   get:
     responses:
