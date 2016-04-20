@@ -1,0 +1,27 @@
+CREATE TABLE corner_booth_info (
+    id character varying(255) primary key,
+    booth_name character varying(255),
+    location_rd text,
+    location_geo geography(POINT,4326),
+    phone_number character varying(255),
+    email character varying(255),
+    open_time character varying(255),
+    category character varying(255),
+    booth_owner character varying(255),
+    booth_story text,
+    like_count integer,
+    create_time timestamp without time zone,
+    update_time timestamp without time zone,
+    create_by character varying(255),
+    disabled bool
+);
+
+CREATE INDEX ix_corner_booth_info_id ON corner_booth_info USING btree(id);
+CREATE INDEX ix_corner_booth_info_booth_name ON corner_booth_info USING btree(booth_name);
+CREATE INDEX ix_corner_booth_info_location ON corner_booth_info USING btree(location_rd);
+CREATE INDEX ix_corner_booth_info_category ON corner_booth_info USING btree(category);
+CREATE INDEX ix_corner_booth_info_booth_owner ON corner_booth_info USING btree(booth_owner);
+CREATE INDEX ix_corner_booth_info_like ON corner_booth_info USING btree(like_count);
+CREATE INDEX ix_corner_booth_info_creator ON corner_booth_info USING btree(create_by);
+
+
