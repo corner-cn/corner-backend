@@ -28,6 +28,7 @@ class BoothInfo(db.Model):
 class BoothImages(db.Model):
 
     __tablename__ = 'corner_booth_images'
+    id = db.Column(db.String(255), primary_key=True)
     booth_id = db.Column(db.String(255))
     image_path = db.Column(db.String(255))
     flag = db.Column(db.String(255))
@@ -38,6 +39,7 @@ class BoothImages(db.Model):
 class BoothAccusation(db.Model):
 
     __tablename__ = 'corner_booth_accusation'
+    id = db.Column(db.String(255), primary_key=True)
     booth_id = db.Column(db.String(255))
     accusation = db.Column(db.Text())
     reporter = db.Column(db.String(255))

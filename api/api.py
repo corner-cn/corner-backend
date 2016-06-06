@@ -23,7 +23,7 @@ from flask import (
     Blueprint, request, render_template, redirect, current_app, flash, session, url_for)
 from flask.ext.login import login_required
 from werkzeug import secure_filename
-from models import (BoothInfo, BoothOwner)
+from models import (BoothInfo, BoothImages, BoothAccusation)
 from werkzeug.contrib.cache import SimpleCache
 
 from flask.ext.login import login_user, login_required, current_user
