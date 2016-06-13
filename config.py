@@ -19,7 +19,10 @@ class Config(Configuration):
 
     log_level = environ_setting("LOG_LEVEL", 'DEBUG', required=False)
 
-    secret_key = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    # secret_key
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    SESSION_COOKIE_SECURE = True
+    # session_cookie_secure = True
 
 class DBConfig(Config):
     db_host = environ_setting("DB_HOST", required=True)
@@ -27,9 +30,9 @@ class DBConfig(Config):
     db_name = environ_setting("DB_NAME", required=True)
     db_user = environ_setting("DB_USER", required=True)
     db_pass = environ_setting("DB_PASS", required=True)
-    sqlalchemy_database_uri = 'postgresql://{}:{}@{}:{}/{}'.format(
+    # sqlalchemy_database_uri
+    SQLALCHEMY_DATABASE_URI = 'postgresql://{}:{}@{}:{}/{}'.format(
         db_user, db_pass, db_host, db_port, db_name
     )
 
 settings = DBConfig.load()
-print type(settings)

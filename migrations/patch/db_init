@@ -1,7 +1,10 @@
 CREATE TABLE corner_booth_info (
     id character varying(255) primary key,
     booth_name character varying(255),
+    loc_text text,
     location_rd text,
+    loc_lo character varying(255),
+    loc_la character varying(255),
     location_geo geography(POINT,4326),
     phone_number character varying(255),
     email character varying(255),

@@ -6,7 +6,7 @@ class BoothInfo(db.Model, CRUDMixin):
 
     __tablename__ = 'corner_booth_info'
     id = db.Column(db.Integer, primary_key=True)
-    booth_id = db.Column(db.String(255))
+    # booth_id = db.Column(db.String(255))
     # Basic Info
     booth_name = db.Column(db.String(255))
     loc_text = db.Column(db.Text())
@@ -22,7 +22,6 @@ class BoothInfo(db.Model, CRUDMixin):
     # Miscs
     like_count = db.Column(db.Integer)
     create_time = db.Column(db.DateTime)
-    update_time = db.Column(db.DateTime)
     create_by = db.Column(db.String(255))
     disabled = db.Column(db.Boolean())
 

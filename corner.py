@@ -10,11 +10,11 @@ from flask import Flask, render_template, session
 
 from config import settings
 from extensions import (
-    db, migrate, bcrypt, login_manager, principals
+    db, migrate
 )
-from flask.ext.principal import (
+from flask_principal import (
     PermissionDenied, RoleNeed, identity_loaded)
-from flask.ext.login import current_user
+from flask_login import current_user
 from werkzeug.contrib.cache import SimpleCache
 import api
 
@@ -27,8 +27,10 @@ def create_app(config_object=None):
     '''
     app = Flask(__name__)
     app.config.from_object(config_object)
-    register_extensions(app)
-    principals.init_app(app)
+    print config_object.__dict__
+    # app.config['SESSION_COOKIE_SECURE'] = True
+    # register_extensions(app)
+    # principals.init_app(app)
     register_blueprints(app)
     register_errorhandlers(app)
     register_listeners(app)
@@ -39,10 +41,10 @@ def create_app(config_object=None):
     return app
 
 
-def register_extensions(app):
-    bcrypt.init_app(app)
-    login_manager.init_app(app)
-    return None
+# def register_extensions(app):
+#     bcrypt.init_app(app)
+#     login_manager.init_app(app)
+#     return None
 
 
 def register_blueprints(app):
