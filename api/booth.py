@@ -4,6 +4,7 @@ from flask.views import MethodView
 
 import subprocess
 from multiprocessing import Process
+import redis
 
 
 class Booth(MethodView):
@@ -23,6 +24,10 @@ class Booth(MethodView):
             pass
         ret = {"status": 200}
         return json.dumps(ret)
+
+        r = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
+        dist = r.execute_command('GEODIST Sicily Palermo Catania', )
+
 
     def put(self):
         ret = {"status": 200}
