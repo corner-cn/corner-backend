@@ -5,104 +5,160 @@ baseUri: https://ijiejiao.cn
 mediaType: text/html; charset=utf-8
 protocols:
   - HTTPS
-types:
-  TestType:
-    type: object
-    properties:
-      id: number
-      optional?: string
-      expanded:
-        type: object
-        properties:
-          count: number
+
+
+/booths:
+    displayName: booth
+    description: Get all booths according to query
+
+    post:
+        body:
+            application/json:
+            example: |
+                {
+                    "longitude": string,
+                    "latitude": string
+                    "category": string,
+                    "filter": string,
+                    "distance": string,
+                    "type": string
+                    "keywords": [string, string...]
+                }
+
+        responses:
+            200:
+            body:
+                application/json:
+                example: |
+                    {
+                        "status": 0,
+                        "msg": "success",
+                        "data": [
+                            {
+                                "booth_id":
+                                "booth_name":
+                                "loc_text"
+                                "loc_lo"
+                                "loc_la"
+                                "phone_number"
+                                "phone_number"
+                                "open_time"
+                                "category"
+                                "booth_owner"
+                                "booth_story"
+                                "like_count"
+                                "create_by"
+                                "thumbnail_url"
+                                "album":["",""],
+                            },
+                            ...
+                        ]
+                    }
+
+
 /booth:
-  displayName: booth
-  description: Get all booths according to query
-  get:
-    responses:
-      200:
+    description: For Create Booth use only
+
+    post:
         body:
-          application/json:
-    queryParameters:
-      longitude:
-        type:
-          - number
-      latitude:
-        type:
-          - number
-      district:
-        type:
-          - string
-      type:
-        type:
-          - string
-      search:
-        type:
-          - string
-  post:
-    responses:
-      200:
-    body:
-      application/json:
-        properties:
-          longitude:
-            type:
-              - number
-          latitude:
-            type:
-              - number
-          location:
-            type:
-              - string
-          story:
-            type:
-              - string
-          description:
-            type:
-              - string
-          reporter:
-            type:
-              - string
-  put:
-    responses:
-      200:
-    body:
-      multipart/form-data:
-        properties:
-          img:
-            type:
-              - file
+            application/json:
+            example: |
+                {
+                    "booth_name":
+                    "loc_text"
+                    "loc_lo"
+                    "loc_la"
+                    "phone_number"
+                    "phone_number"
+                    "open_time"
+                    "category"
+                    "booth_owner"
+                    "booth_story"
+                    "create_by"
+                    # TODO: TBD
+                    "thumbnail_url"
+                    "album":["",""],
+                }
+
+        responses:
+            200
+            body:
+                application/json:
+                example: |
+                    {
+                        "status": 0,
+                        "msg": "success",
+                        "data": [
+                        ]
+                    }
+
+    put:
+        body:
+            # TODO: TBD
+            multipart/form-data:
+                properties:
+                  img:
+                    type:
+                      - file
+
+        responses:
+          200:
+
+
+
 /booth/{id}:
-  displayName: getBoothByID
-  description: Get booth info from id
-  get:
-    responses:
-      200:
+    displayName: getBoothByID
+    description: Get booth info from id
+
+    get:
+        responses:
+          200:
+            body:
+              application/json:
+
+    delete:
+        responses:
+            200:
+            body:
+                application/json:
+                example: |
+                    {
+                        "status": 0,
+                        "msg": "success",
+                        "data": [
+                        ]
+                    }
+
+    post:
+        displayName: boot name
+        description: User action like "like" or "dislike"
+
         body:
-          application/json:
-  delete:
-    responses:
-      200:
-        body:
-          application/json:
-    queryParameters:
-      token:
-        type:
-          - string
-  post:
-    displayName: likeAction
-    description: User action like "like" or "dislike"
-    responses:
-      200:
-        body:
-          application/json:
-            properties:
-              acton:
-                type:
-                  - number
+            application/json:
+            example: |
+                {
+                    "action":"like",
+                }
+
+        responses:
+            200:
+            body:
+                application/json:
+                example: |
+                    {
+                        "status": 0,
+                        "msg": "success",
+                        "data": [
+                        ]
+                    }
+
+
+
 /img/{scale}/{boothid}:
   get:
     responses:
       200:
         body:
           application/json:
+
+# TODO: category
