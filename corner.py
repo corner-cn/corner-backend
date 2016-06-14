@@ -2,19 +2,12 @@
 
 '''The app module, containing the app factory function.'''
 
-import os
-import redis
-import json
 from printobject import pp
-from flask import Flask, render_template, session
+from flask import Flask
 
-from config import settings
 from extensions import (
     db, migrate
 )
-from flask_principal import (
-    PermissionDenied, RoleNeed, identity_loaded)
-from flask_login import current_user
 from werkzeug.contrib.cache import SimpleCache
 import api
 
@@ -27,13 +20,9 @@ def create_app(config_object=None):
     '''
     app = Flask(__name__)
     app.config.from_object(config_object)
-    print config_object.__dict__
-    # app.config['SESSION_COOKIE_SECURE'] = True
-    # register_extensions(app)
-    # principals.init_app(app)
+    # print config_object.__dict__
     register_blueprints(app)
     register_errorhandlers(app)
-    register_listeners(app)
     register_db(app)
 
     app.local_cache = SimpleCache()
@@ -41,14 +30,8 @@ def create_app(config_object=None):
     return app
 
 
-# def register_extensions(app):
-#     bcrypt.init_app(app)
-#     login_manager.init_app(app)
-#     return None
-
-
 def register_blueprints(app):
-    app.register_blueprint(api.api.api, url_prefix='/api/v1')
+    app.register_blueprint(api.api.api, url_prefix='/v1')
     return None
 
 
@@ -67,23 +50,7 @@ def register_db(app):
     return None
 
 
-def register_listeners(app):
-    @identity_loaded.connect_via(app)
-    def on_identity_loaded(sender, identity):
-        # Set the identity user object
-        identity.user = current_user
-
-        if session.get('permissions'):
-            for role in session.get('permissions'):
-                identity.provides.add(RoleNeed(role))
-
-        app.logger.debug('on_identity_loaded: {}'.format(identity))
-
-
-myapp = None
 from config import DBConfig
 myapp = create_app(config_object=DBConfig)
 pp(myapp.config)
-# from werkzeug.contrib.fixers import ProxyFix
-# myapp.wsgi_app = ProxyFix(myapp.wsgi_app)
-myapp.run()
+# myapp.run()

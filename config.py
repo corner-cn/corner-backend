@@ -17,12 +17,23 @@ class Config(Configuration):
 
     api_version = "v1"
 
-    log_level = environ_setting("LOG_LEVEL", 'DEBUG', required=False)
-
     # secret_key
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SESSION_COOKIE_SECURE = True
-    # session_cookie_secure = True
+
+    def config_for_flask(self):
+        return {
+            'REDIS_HOST': self.get('REDIS_HOST'),
+            'REDIS_PORT': self.get('REDIS_PORT'),
+            'DEBUG': self.get('DEBUG'),
+            'DEBUG_TB_ENABLED': self.get('DEBUG_TB_ENABLED'),
+            'DEBUG_TB_INTERCEPT_REDIRECTS': self.get('DEBUG_TB_INTERCEPT_REDIRECTS'),
+            'SECRET_KEY': self.get('SECRET_KEY'),
+            'SQLALCHEMY_DATABASE_URI': self.get('SQLALCHEMY_DATABASE_URI'),
+            'WTF_CSRF_ENABLED': False,
+            'SECURITY_SEND_REGISTER_EMAIL': False,
+        }
+
 
 class DBConfig(Config):
     db_host = environ_setting("DB_HOST", required=True)

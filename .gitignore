@@ -20,6 +20,8 @@
 output.xml
 report.html
 .cache/*
+.cache/
+.gitignore
 deploy.sh.bak
 deploy_new.sh
 tags

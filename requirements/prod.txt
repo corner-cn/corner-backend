@@ -1,3 +1,8 @@
 flask
 flask_sqlalchemy
+flask_migrate
 redis
+geopy
+printobject
+python-dotenv
+confire

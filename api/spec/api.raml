@@ -16,13 +16,17 @@ protocols:
             application/json:
             example: |
                 {
-                    "longitude": string,
-                    "latitude": string
-                    "category": string,
-                    "filter": string,
-                    "distance": string,
-                    "type": string
-                    "keywords": [string, string...]
+                    my_position: {
+                        "longitude": string,
+                        "latitude": string,
+                    }
+                    query_type: "recommendation|keywords|priority|combined"
+                    query_params: {
+                        "category": string,
+                        "distance": string,
+                        "keywords": [string, string...]
+                        "order_by": "priority|check-ins|latest|nearby"
+                    }
                 }
 
         responses:
@@ -136,7 +140,7 @@ protocols:
             application/json:
             example: |
                 {
-                    "action":"like",
+                    "operation":"check-in",
                 }
 
         responses:

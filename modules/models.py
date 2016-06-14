@@ -1,17 +1,20 @@
-from database import db, CRUDMixin
-from geoalchemy2.types import Geography
+from extensions import db
+from database import CRUDMixin
 
 
 class BoothInfo(db.Model, CRUDMixin):
 
     __tablename__ = 'corner_booth_info'
-    id = db.Column(db.Integer, primary_key=True)
-    # booth_id = db.Column(db.String(255))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    booth_id = db.Column(db.String(255))
     # Basic Info
     booth_name = db.Column(db.String(255))
     loc_text = db.Column(db.Text())
     loc_lo = db.Column(db.String(255))
     loc_la = db.Column(db.String(255))
+    city = db.Column(db.String(255))
+    district = db.Column(db.String(255))
+    business_district = db.Column(db.String(255))
     phone_number = db.Column(db.String(255))
     email = db.Column(db.String(255))
     open_time = db.Column(db.String(255))
@@ -20,8 +23,10 @@ class BoothInfo(db.Model, CRUDMixin):
     booth_owner = db.Column(db.String(255))
     booth_story = db.Column(db.Text())
     # Miscs
-    like_count = db.Column(db.Integer)
+    check_in_num = db.Column(db.Integer)
+    priority = db.Column(db.Integer)
     create_time = db.Column(db.DateTime)
+    update_time = db.Column(db.DateTime)
     create_by = db.Column(db.String(255))
     disabled = db.Column(db.Boolean())
 
@@ -29,7 +34,7 @@ class BoothInfo(db.Model, CRUDMixin):
 class BoothImages(db.Model, CRUDMixin):
 
     __tablename__ = 'corner_booth_images'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     booth_id = db.Column(db.String(255))
     image_path = db.Column(db.String(255))
     flag = db.Column(db.String(255))
@@ -40,7 +45,7 @@ class BoothImages(db.Model, CRUDMixin):
 class BoothAccusation(db.Model, CRUDMixin):
 
     __tablename__ = 'corner_booth_accusation'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     booth_id = db.Column(db.String(255))
     accusation = db.Column(db.Text())
     reporter = db.Column(db.String(255))
