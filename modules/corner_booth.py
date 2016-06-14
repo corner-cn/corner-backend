@@ -24,7 +24,7 @@ class CornerBooth(BoothInfo):
     @classmethod
     def create_from_dict(cls, info_dict):
         booth = cls()
-        booth.booth_id = str(uuid.uuid1())
+        booth.booth_id = str(uuid.uuid4())
         booth.booth_name = info_dict.get('booth_name')
         booth.loc_text = info_dict.get('loc_text')
         booth.loc_lo = info_dict.get('loc_lo')

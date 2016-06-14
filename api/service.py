@@ -2,11 +2,15 @@ import json
 from sqlalchemy import desc, and_, or_
 
 from utils.constants import SpecialFlag
-from utils.location import get_reverse
+from utils.location import get_reverse, GeoApi
 from modules.corner_booth import CornerBooth
+from extensions import corner_redis
 
 
 class BoothService(object):
+
+    _geo = GeoApi(corner_redis)
+    _element = 'booths'
 
     def __init__(self, longitude, latitude):
         self.longitude = longitude
@@ -99,6 +103,18 @@ class BoothService(object):
     @staticmethod
     def by_create_time(city, business_district):
         pass
+
+    @classmethod
+    def insertBoothGeo(cls, boothId, x, y):
+        return cls._geo.geoadd(cls._element, x, y, boothId)
+
+    @classmethod
+    def getNearestBoothById(cls, boothId, scale=10, limit=50):
+        return cls._geo.georadiusbymember(cls._element, boothId, scale, 'km', 'withdist', 'asc', 'count', limit)
+
+    @classmethod
+    def getNearestBoothByLocation(cls, latitude, longitude, scale=10, limit=50):
+        return cls._geo.georadius(cls._element, latitude, longitude, scale, 'km', 'withdist', 'asc', 'count', limit)
 
     def all(self):
         if self.city:

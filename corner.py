@@ -4,9 +4,11 @@
 
 from printobject import pp
 from flask import Flask
+import redis
+import os
 
 from extensions import (
-    db, migrate
+    db, migrate, corner_redis
 )
 from werkzeug.contrib.cache import SimpleCache
 import api
@@ -20,6 +22,7 @@ def create_app(config_object=None):
     '''
     app = Flask(__name__)
     app.config.from_object(config_object)
+    register_redis(app)
     # print config_object.__dict__
     register_blueprints(app)
     register_errorhandlers(app)
@@ -49,8 +52,12 @@ def register_db(app):
     migrate.init_app(app, db)
     return None
 
+def register_redis(app):
+    app.redis = corner_redis
+    return None
+
 
 from config import DBConfig
 myapp = create_app(config_object=DBConfig)
 pp(myapp.config)
-# myapp.run()
+myapp.run()

@@ -1,5 +1,5 @@
 import json
-from flask import request
+from flask import request, current_app
 from flask.views import MethodView
 import logging
 
@@ -24,7 +24,8 @@ class Booth(MethodView):
         if id is None:
             booth_info = json.loads(request.data)
             logger.info("Create booth with params {}".format(booth_info))
-            CornerBooth.create_from_dict(info_dict=booth_info)
+            booth = CornerBooth.create_from_dict(info_dict=booth_info)
+            BoothService.insertBoothGeo(booth.id, booth.loc_la, booth.loc_lo)
             return json.dumps(ret)
         else:
             booth_op = json.loads(request.data)
@@ -62,6 +63,9 @@ class Booths(MethodView):
         ret = {"status": 0, "msg": "success", "data": []}
 
         booth_service = BoothService(longitude, latitude)
+
+        # TODO query by location
+        BoothService.getNearestBoothByLocation()
 
         if query_type == QueryType.RECOMMENDATION:
             recommend = booth_service.by_recommendation().first()

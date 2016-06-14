@@ -13,3 +13,39 @@ def get_reverse(latitude, longitude):
         return [country, city, district]
     else:
         return None
+
+
+class GeoApi():
+
+    def __init__(self, instance):
+        self.redis = instance
+
+    def geoadd(self, *args):
+        return self._run('geoadd', *args)
+
+    def georadius(self, *args):
+        return self._run('georadius', *args)
+
+    def georadiusbymember(self, *args):
+        return self._run('georadiusbymember', *args)
+
+    def geoencode(self, *args):
+        return self._run('geoadd', *args)
+
+    def geodecode(self, *args):
+        return self._run('geoadd', *args)
+
+    def zrem(self, name, element):
+        return self._run('zrem', name, element)
+
+    def zrange(self, *args):
+        return self._run('zrange', name, element)
+
+    def zcard(self, name):
+        return self._run('zcard', name)
+
+    def _run(self, command, *args):
+        return self.redis.execute_command('{} {}'.format(command, ' '.join(self._format_args(args))))
+
+    def _format_args(self, args):
+        return map(lambda x : str(x), args)

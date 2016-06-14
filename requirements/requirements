@@ -26,9 +26,11 @@ Jinja2==2.8
 lxml==3.6.0
 Mako==1.0.4
 MarkupSafe==0.23
+migrate==0.3.8
 ordereddict==1.1
 passlib==1.6.5
 printobject==0.1.6
+psycopg2==2.6.1
 pyasn1==0.1.9
 pyasn1-modules==0.0.8
 pycparser==2.14
@@ -47,6 +49,7 @@ simplejson==3.8.2
 six==1.10.0
 SQLAlchemy==1.0.13
 Twisted==16.1.1
+uWSGI==2.0.13.1
 w3lib==1.14.2
 Werkzeug==0.11.10
 WTForms==2.1
