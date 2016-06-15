@@ -3,6 +3,7 @@ from flask import request
 from flask.views import MethodView
 import logging
 import os
+import sys
 
 from service import BoothService
 from utils.constants import QueryType, QueryParams
@@ -10,6 +11,8 @@ from modules.corner_booth import CornerBooth
 from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 
 logger = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(stream_handler)
 
 
 class Booth(MethodView):
