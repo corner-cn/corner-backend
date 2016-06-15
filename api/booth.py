@@ -39,6 +39,7 @@ class Booth(MethodView):
     def put(self, id):
         ret = {"status": 0, "msg": "success", "data": []}
         uploaded_files = request.files.getlist("file[]")
+        logger.debug("upload files {}".format(uploaded_files))
         filenames = []
         for file in uploaded_files:
             # Check if the file is one of the allowed types/extensions
