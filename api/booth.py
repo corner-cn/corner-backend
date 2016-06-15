@@ -91,8 +91,8 @@ class Booths(MethodView):
 
         booth_service = BoothService(longitude, latitude)
 
-        # TODO query by location
-        BoothService.getNearestBoothByLocation()
+        # # TODO query by location
+        # BoothService.getNearestBoothByLocation()
 
         if query_type == QueryType.RECOMMENDATION:
             recommend = booth_service.by_recommendation().first()
