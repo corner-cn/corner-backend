@@ -116,9 +116,14 @@ class BoothService(object):
 
     def all(self):
         if self.city:
-            return CornerBooth.all(city=self.city)
+            return CornerBooth.where(
+                city=self.city,
+                disabled=False
+            )
         else:
-            return CornerBooth.all()
+            return CornerBooth.where(
+                disabled=False
+            )
 
 
 def uploadImg():

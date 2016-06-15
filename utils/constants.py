@@ -24,6 +24,11 @@ class QueryParams(object):
 class BoothOperation(object):
     CHECK_IN = "check_in"
 
+class BoothImageFlag(object):
+    DEFAULT = "default"
+    THUMBNAIL = "thumbnail"
+
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/'
+DOMAIN_NAME = "api.ijiejiao.cn"

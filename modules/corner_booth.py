@@ -1,10 +1,12 @@
 from models import BoothInfo, BoothImages
-from utils.constants import BoothOperation
+from utils.constants import BoothOperation, BoothImageFlag
 from utils.location import get_reverse
 from sqlalchemy import orm
 
 import uuid
 import datetime
+
+from utils.common import gen_image_url
 
 class CornerBooth(BoothInfo):
 
@@ -25,10 +27,20 @@ class CornerBooth(BoothInfo):
         ret['update_time'] = ret['update_time'].strftime(time_fmt) if 'update_time' in ret and ret['update_time'] else None
         ret['_sa_instance_state'] = None
         ret['image_urls'] = []
-        # TODO: image utls compose
+        # TODO: compute distance to current position.
+        ret['image_urls'] = []
         booth_imgs = BoothImages.all(booth_id=self.booth_id)
         for booth_img in booth_imgs:
-            ret['image_urls'].append(booth_img.image_path)
+            img_url = gen_image_url(self.booth_id, booth_img.image_path)
+            if booth_img.flag == BoothImageFlag.THUMBNAIL:
+                # http://api.ijiejiao.cn/static/88cf9f2f-774b-4df2-a090-6889b9100a98/corner_pic_1.png
+                ret['thumbnail_url'] = img_url
+            else:
+                if booth_img.flag == BoothImageFlag.DEFAULT:
+                    ret['image_urls'].insert(0, img_url)
+                else:
+                    ret['image_urls'].append(img_url)
+        ret['distance'] = None
         return ret
 
     @classmethod
