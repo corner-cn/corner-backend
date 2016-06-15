@@ -60,4 +60,4 @@ def register_redis(app):
 from config import DBConfig
 myapp = create_app(config_object=DBConfig)
 pp(myapp.config)
-myapp.run()
+# myapp.run()

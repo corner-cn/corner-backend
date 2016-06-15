@@ -4,6 +4,7 @@ from confire import Configuration, environ_setting
 
 import dotenv
 dotenv.load_dotenv(os.path.join(os.path.join(os.path.dirname(__file__)), '.env'))
+from utils.constants import UPLOAD_FOLDER
 
 class Config(Configuration):
 
@@ -32,6 +33,7 @@ class Config(Configuration):
             'SQLALCHEMY_DATABASE_URI': self.get('SQLALCHEMY_DATABASE_URI'),
             'WTF_CSRF_ENABLED': False,
             'SECURITY_SEND_REGISTER_EMAIL': False,
+            'UPLOAD_FOLDER': UPLOAD_FOLDER
         }
 
 

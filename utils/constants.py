@@ -24,3 +24,6 @@ class QueryParams(object):
 class BoothOperation(object):
     CHECK_IN = "check_in"
 
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+UPLOAD_FOLDER = 'static/'
