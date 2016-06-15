@@ -12,7 +12,10 @@ from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 
 logger = logging.getLogger(__name__)
 stream_handler = logging.StreamHandler(sys.stderr)
+formatter = logging.Formatter('%(name)-12s %(asctime)s %(levelname)-8s %(message)s', '%a, %d %b %Y %H:%M:%S',)
+stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
+logger.setLevel(logging.DEBUG)
 
 
 class Booth(MethodView):
@@ -148,6 +151,7 @@ class Image(MethodView):
     def post(self):
         ret = {"status": 0, "msg": "success", "data": []}
         logger.error("upload files {}".format(request.files))
+        logger.info("upload files {}".format(request))
         uploaded_files = request.files.getlist("file[]")
         from flask import current_app
         current_app.logger.info("upload files {}".format(uploaded_files))
