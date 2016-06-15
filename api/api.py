@@ -16,9 +16,8 @@ booth = Booth.as_view('booth')
 booths = Booths.as_view('booths')
 image = Image.as_view('image')
 
+api.add_url_rule('/image/', view_func=image, methods=['GET', 'POST'])
 api.add_url_rule('/booth/', view_func=booth, defaults={'id': None}, methods=['POST'])
 api.add_url_rule('/booth/<id>', view_func=booth, methods=['GET', 'POST', 'PUT', 'DELETE'])
-
 api.add_url_rule('/booths/', view_func=booths)
-
-api.add_url_rule('/image/', view_func=image, methods=['GET', 'POST'])
+#

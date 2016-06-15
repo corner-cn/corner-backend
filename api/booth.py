@@ -144,8 +144,10 @@ class Image(MethodView):
 
     def post(self):
         ret = {"status": 0, "msg": "success", "data": []}
+        print "upload files {}".format(request.files)
         uploaded_files = request.files.getlist("file[]")
         logger.info("upload files {}".format(uploaded_files))
+        print ("upload files {}".format(uploaded_files))
         filenames = []
         for file in uploaded_files:
             # Check if the file is one of the allowed types/extensions
@@ -162,7 +164,7 @@ class Image(MethodView):
         # Load an html page with a link to each uploaded file
         return json.dumps(ret)
 
-    def get(self, id):
+    def get(self):
         if id is None:
             pass
         else:
