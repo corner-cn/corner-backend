@@ -95,14 +95,14 @@ class Booths(MethodView):
         # BoothService.getNearestBoothByLocation()
 
         if query_type == QueryType.RECOMMENDATION:
-            recommend = booth_service.by_recommendation().first()
-            if recommend:
-                ret["data"].append(recommend.to_dict())
+            recommends = booth_service.by_recommendation()
+            if recommends:
+                for recommend in list(recommends)[:3]:
+                    ret["data"].append(recommend.to_dict())
 
         elif query_type == QueryType.PRIORITY:
-            priorities = booth_service.by_priority().first()
-            priorities_list = list(priorities)
-            for priority in priorities_list[:3]:
+            priority = booth_service.by_priority().first()
+            if priority:
                 ret["data"].append(priority.to_dict())
 
         elif query_type == QueryType.KEYWORDS:

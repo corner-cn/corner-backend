@@ -33,3 +33,17 @@ CREATE INDEX ix_corner_booth_info_like ON corner_booth_info USING btree(like_cou
 CREATE INDEX ix_corner_booth_info_creator ON corner_booth_info USING btree(create_by);
 
 
+CREATE TABLE corner_booth_images (
+    id BIGSERIAL primary key,
+    booth_id character varying(255),
+    image_path text,
+    flag character varying(255),
+    create_time timestamp without time zone,
+    disabled bool
+);
+
+CREATE INDEX ix_corner_booth_images_id ON corner_booth_images USING btree(id);
+CREATE INDEX ix_corner_booth_images_booth_id ON corner_booth_images USING btree(booth_id);
+CREATE INDEX ix_corner_booth_images_image_path ON corner_booth_images USING btree(image_path);
+CREATE INDEX ix_corner_booth_images_flag ON corner_booth_images USING btree(flag);
+
