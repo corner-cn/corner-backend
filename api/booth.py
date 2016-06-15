@@ -8,7 +8,7 @@ import sys
 from service import BoothService
 from utils.constants import QueryType, QueryParams
 from modules.corner_booth import CornerBooth
-from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag
+from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag, IMAGE_DIR_PREFIX
 from modules.models import BoothImages
 
 logger = logging.getLogger(__name__)
@@ -168,7 +168,7 @@ class Image(MethodView):
                 # Move the file form the temporal folder to the upload
                 # folder we setup
                 logger.info("current working dir {}".format(os.getcwd()))
-                img_file.save(os.path.join(UPLOAD_FOLDER, filename))
+                img_file.save(os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, filename))
                 # Save the filename into a list, we'll use it later
                 filenames.append(filename)
                 # Redirect the user to the uploaded_file route, which
