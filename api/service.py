@@ -114,6 +114,11 @@ class BoothService(object):
     def getNearestBoothByLocation(cls, latitude, longitude, scale=10, limit=50):
         return cls._geo.georadius(cls._element, latitude, longitude, scale, 'km', 'withdist', 'asc', 'count', limit)
 
+    @classmethod
+    def get_distance(cls, target_la, target_lo):
+        # TODO: implement this.
+        return None
+
     def all(self):
         if self.city:
             return CornerBooth.where(

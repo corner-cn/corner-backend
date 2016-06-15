@@ -92,9 +92,6 @@ class Booths(MethodView):
 
         booth_service = BoothService(longitude, latitude)
 
-        # # TODO query by location
-        # BoothService.getNearestBoothByLocation()
-
         if query_type == QueryType.RECOMMENDATION:
             recommends = booth_service.by_recommendation()
             if recommends:
@@ -141,6 +138,10 @@ class Booths(MethodView):
                 booth_list = list(booth_query)
 
             for booth in booth_list:
+                # TODO: implement this
+                distance = booth_service.get_distance(booth.loc_la, booth.loc_lo)
+                booth_info = booth.to_dict()
+                booth_info['distance'] = distance
                 ret["data"].append(booth.to_dict())
 
         else:
@@ -155,6 +156,12 @@ class Image(MethodView):
 
     def post(self, id):
         ret = {"status": 0, "msg": "success", "data": []}
+        booth = CornerBooth.first(booth_id=id)
+        if not booth:
+            msg = "Can not get booth ID {}".format(id)
+            ret = {"status": -1, "msg": msg, "data": []}
+            return json.dumps(msg)
+
         logger.error("upload files {}".format(request.files))
         files_hash = request.files.to_dict()
         logger.info("files hash {}".format(files_hash))
@@ -168,13 +175,12 @@ class Image(MethodView):
                 # Move the file form the temporal folder to the upload
                 # folder we setup
                 logger.info("current working dir {}".format(os.getcwd()))
-                img_file.save(os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, filename))
+                # TODO: rename files here.
+                file_path = os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth.booth_id, "/", filename)
+                img_file.save(file_path)
                 # Save the filename into a list, we'll use it later
                 filenames.append(filename)
-                # Redirect the user to the uploaded_file route, which
-                # will basicaly show on the browser the uploaded file
-        # Load an html page with a link to each uploaded file
-        booth = CornerBooth.first(booth_id=id)
+
         if booth:
             booth_images = []
             for image in filenames:
