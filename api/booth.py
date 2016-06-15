@@ -11,7 +11,7 @@ from modules.corner_booth import CornerBooth
 from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 
 logger = logging.getLogger(__name__)
-stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler = logging.StreamHandler(sys.stderr)
 logger.addHandler(stream_handler)
 
 
