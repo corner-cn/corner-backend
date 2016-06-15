@@ -146,10 +146,8 @@ class Booths(MethodView):
 class Image(MethodView):
 
     def post(self):
-        from logging import DEBUG
-        logger.setLevel(DEBUG)
         ret = {"status": 0, "msg": "success", "data": []}
-        print "upload files {}".format(request.files)
+        logger.info("upload files {}".format(request.files))
         uploaded_files = request.files.getlist("file[]")
         from flask import current_app
         current_app.logger.info("upload files {}".format(uploaded_files))
