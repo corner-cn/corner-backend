@@ -146,7 +146,8 @@ class Image(MethodView):
         ret = {"status": 0, "msg": "success", "data": []}
         print "upload files {}".format(request.files)
         uploaded_files = request.files.getlist("file[]")
-        logger.info("upload files {}".format(uploaded_files))
+        from flask import current_app
+        current_app.logger.info("upload files {}".format(uploaded_files))
         print ("upload files {}".format(uploaded_files))
         filenames = []
         for file in uploaded_files:
