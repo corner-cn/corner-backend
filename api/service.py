@@ -36,7 +36,7 @@ class BoothService(object):
 
     @staticmethod
     def by_keyword(keyword):
-        filter_query = CornerBooth.all().filter(
+        filter_query = CornerBooth.where(disabled=False).filter(
             or_(
                 CornerBooth.booth_name.like('%{}%'.format(keyword)),
                 CornerBooth.booth_owner.like('%{}%'.format(keyword)),

@@ -190,10 +190,10 @@ class Image(MethodView):
 
 
     def get(self, id):
+        # NOTE: This method seems no need to implement now.
         if id is None:
             pass
         else:
-            # TODO: getImageByBooth
             pass
         ret = {"rows": [], "total": 0, "msg": ""}
         return json.dumps(ret)
