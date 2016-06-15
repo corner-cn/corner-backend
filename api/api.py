@@ -21,4 +21,4 @@ api.add_url_rule('/booth/<id>', view_func=booth, methods=['GET', 'POST', 'PUT', 
 
 api.add_url_rule('/booths/', view_func=booths)
 
-api.add_url_rule('/img/', view_func=image)
+api.add_url_rule('/image/', view_func=image, methods=['GET', 'POST'])
