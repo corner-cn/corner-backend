@@ -132,13 +132,13 @@ class Booths(MethodView):
 
             booth_list = []
             if distance:
-                # TODO: distinguish km, m,  and leave process later.
+                # TODO: distance will looks like 100, 200, 500, 2000... we need implement by_distance
                 booth_list = booth_service.by_distance(distance, booth_query)
             else:
                 booth_list = list(booth_query)
 
             for booth in booth_list:
-                # TODO: implement this
+                # TODO: implement get_distance.
                 distance = booth_service.get_distance(booth.loc_la, booth.loc_lo)
                 booth_info = booth.to_dict()
                 booth_info['distance'] = distance
