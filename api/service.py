@@ -130,23 +130,7 @@ def uploadImg():
   ret = {"rows": [], "total": 0, "msg": ""}
   return json.dumps(ret)
 
-# def deleteBooth():
-#   ret = {"rows": [], "total": 0, "msg": ""}
-#   return json.dumps(ret)
-
-# def queryBooths():
-#   ret = {"rows": [], "total": 0, "msg": ""}
-#   return json.dumps(ret)
-
 def getImageByBooth():
   ret = {"rows": [], "total": 0, "msg": ""}
   return json.dumps(ret)
-#
-# def booth2json(booth):
-#   ret = booth.__dict__
-#   timefmt = '%Y-%m-%d %H:%M:%S'
-#   ret['create_time'] = ret['create_time'].strftime(timefmt) if 'create_time' in ret else None
-#   ret['update_time'] = ret['update_time'].strftime(timefmt) if 'update_time' in ret else None
-#   ret['_sa_instance_state'] = None
-#   return ret
 

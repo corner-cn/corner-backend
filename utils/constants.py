@@ -21,6 +21,14 @@ class QueryParams(object):
     ORDER_BY = "order_by"
     CATEGORY = "category"
 
+
+class Category(object):
+    ALL = "all"
+    GROCERY = "grocery"
+    SNACKS = "snacks"
+    HANDICRAFT = "handicraft"
+
+
 class BoothOperation(object):
     CHECK_IN = "check_in"
 
