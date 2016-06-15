@@ -1,5 +1,5 @@
 import json
-from sqlalchemy import desc, and_, or_
+from sqlalchemy import desc, and_, or_, in_
 
 from utils.constants import SpecialFlag
 from utils.location import get_reverse, GeoApi
@@ -46,9 +46,17 @@ class BoothService(object):
         return filter_query
 
     @staticmethod
-    def by_distance(distance, filter_query=None):
-        # TODO: query by redis features.
-        pass
+    def by_distance(distance_ids, filter_query=None):
+        # Query distance ids first with redis geo
+        # Then query booths by distance ids
+        if filter_query:
+            return filter_query.filter(
+                CornerBooth.id.in_(distance_ids)
+            )
+        else:
+            return CornerBooth.all(
+                CornerBooth.id.in_(distance_ids)
+            )
 
     @staticmethod
     def by_district(city, district, filter_query=None):
@@ -107,16 +115,25 @@ class BoothService(object):
         return cls._geo.geoadd(cls._element, x, y, boothId)
 
     @classmethod
-    def getNearestBoothById(cls, boothId, scale=10, limit=50):
-        return cls._geo.georadiusbymember(cls._element, boothId, scale, 'km', 'withdist', 'asc', 'count', limit)
+    def getNearestBoothById(cls, boothId, scale=1000, unit='m', limit=50):
+        return cls._geo.georadiusbymember(cls._element, boothId, scale, unit, 'withdist', 'asc', 'count', limit)
 
     @classmethod
-    def getNearestBoothByLocation(cls, latitude, longitude, scale=10, limit=50):
-        return cls._geo.georadius(cls._element, latitude, longitude, scale, 'km', 'withdist', 'asc', 'count', limit)
+    def getNearestBoothByLocation(cls, latitude, longitude, scale=1000, unit='m', limit=50):
+        return cls._geo.georadius(cls._element, latitude, longitude, scale, unit, 'withdist', 'asc', 'count', limit)
 
     @classmethod
     def get_distance(cls, target_la, target_lo):
-        # TODO: implement this.
+        # haversine Formula
+        if target_la and target_lo and self.longitude and self.latitude:
+            lon1, lat1, lon2, lat2 = map(radians, [self.longitude, self.latitude, target_la, target_lo])  
+  
+            dlon = lon2 - lon1   
+            dlat = lat2 - lat1   
+            a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2  
+            c = 2 * asin(sqrt(a))   
+            r = 6371 
+            return c * r * 1000   
         return None
 
     def all(self):

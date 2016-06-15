@@ -131,17 +131,28 @@ class Booths(MethodView):
                 booth_query = booth_service.order_by_flag(order_by, booth_query)
 
             booth_list = []
+            boothGeos = {}
             if distance:
-                # TODO: distance will looks like 100, 200, 500, 2000... we need implement by_distance
-                booth_list = booth_service.by_distance(distance, booth_query)
+                # distance will looks like 100, 200, 500, 2000... we need implement by_distance
+                # 100m 200m 500m ...
+                # boothGeos: [[boothId1, distance],[boothId2, distance]...]
+                boothGeos = dict(booth_service.getNearestBoothByLocation(booth_service.latitude, booth_service.longitude, distance))
+                booth_list = booth_service.by_distance(boothGeos.keys(), booth_query)
             else:
                 booth_list = list(booth_query)
 
             for booth in booth_list:
-                # TODO: implement get_distance.
-                distance = booth_service.get_distance(booth.loc_la, booth.loc_lo)
+                # implement get_distance.
+                # Current redis do not support this, only can get distance by location symbols
+                # Use haversine Formula instead
+                # Can we just give booths coordinates and display in client with map instead of computation in backend?
+                # Backend do not have street info
                 booth_info = booth.to_dict()
-                booth_info['distance'] = distance
+                if booth.id in boothGeos:
+                    booth_info['distance'] = boothGeos[booth.id]
+                else
+                    distance = booth_service.get_distance(booth.loc_la, booth.loc_lo)    
+                    booth_info['distance'] = distance
                 ret["data"].append(booth.to_dict())
 
         else:

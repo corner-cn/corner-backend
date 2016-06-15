@@ -35,6 +35,9 @@ class GeoApi():
     def geodecode(self, *args):
         return self._run('geoadd', *args)
 
+    def geodist(self, *args):
+        return self._run('geodist', *args)
+
     def zrem(self, name, element):
         return self._run('zrem', name, element)
 
