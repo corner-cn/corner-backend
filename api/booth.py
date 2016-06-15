@@ -155,18 +155,18 @@ class Image(MethodView):
     def post(self, id):
         ret = {"status": 0, "msg": "success", "data": []}
         logger.error("upload files {}".format(request.files))
-        logger.info("upload files {} with dict {}".format(request, request.__dict__))
-        uploaded_files = request.files.getlist("file[]")
-        # print ("upload files {}".format(uploaded_files))
+        files_hash = request.files.to_dict()
+        logger.info("files hash {}".format(files_hash))
         filenames = []
-        for file in uploaded_files:
+        for img_file in files_hash.values():
+            logger.info("processing file {}".format(img_file))
             # Check if the file is one of the allowed types/extensions
-            if file and allowed_file(file.filename):
+            if img_file and allowed_file(img_file.filename):
                 # Make the filename safe, remove unsupported chars
-                filename = file.filename
+                filename = img_file.filename
                 # Move the file form the temporal folder to the upload
                 # folder we setup
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                img_file.save(os.path.join(UPLOAD_FOLDER, filename))
                 # Save the filename into a list, we'll use it later
                 filenames.append(filename)
                 # Redirect the user to the uploaded_file route, which
