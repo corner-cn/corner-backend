@@ -33,7 +33,8 @@ class Booth(MethodView):
             booth_info = json.loads(request.data)
             logger.info("Create booth with params {}".format(booth_info))
             booth = CornerBooth.create_from_dict(info_dict=booth_info)
-            BoothService.insertBoothGeo(booth.id, booth.loc_la, booth.loc_lo)
+            if booth.loc_la and booth.loc_lo:
+                BoothService.insertBoothGeo(booth.id, booth.loc_la, booth.loc_lo)
             return json.dumps(ret)
         else:
             booth_op = json.loads(request.data)
@@ -148,13 +149,11 @@ class Booths(MethodView):
 
 class Image(MethodView):
 
-    def post(self):
+    def post(self, id):
         ret = {"status": 0, "msg": "success", "data": []}
         logger.error("upload files {}".format(request.files))
         logger.info("upload files {} with dict {}".format(request, request.__dict__))
         uploaded_files = request.files.getlist("file[]")
-        from flask import current_app
-        current_app.logger.info("upload files {}".format(uploaded_files))
         # print ("upload files {}".format(uploaded_files))
         filenames = []
         for file in uploaded_files:
@@ -170,9 +169,24 @@ class Image(MethodView):
                 # Redirect the user to the uploaded_file route, which
                 # will basicaly show on the browser the uploaded file
         # Load an html page with a link to each uploaded file
-        return json.dumps(ret)
+        from modules.models import BoothImages
+        booth = CornerBooth.first(booth_id=id)
+        if booth:
+            booth_images = []
+            for image in filenames:
+                booth_image = BoothImages.create(
+                    booth_id=booth.id,
+                    image_path=image,
+                    create_time=booth.create_time
+                )
+                booth_images.append(booth_image)
+            booth_images[0].flag = "MAJOR"
 
-    def get(self):
+        return json.dumps(ret)
+        # TODO: save images to disk and return URL to clients
+
+
+    def get(self, id):
         if id is None:
             pass
         else:

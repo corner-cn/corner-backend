@@ -123,43 +123,6 @@ class BoothService(object):
             return CornerBooth.all()
 
 
-# def queryBooths():
-#   ret = {"rows": [], "total": 0, "msg": ""}
-#   return json.dumps(ret)
-
-# def getBoothById(id):
-#   ret = {"status": "ok", "data": None}
-#   booth = db.session.query(BoothInfo).filter_by(
-#     id = id
-#   ).one()
-#   ret['data'] = json.dumps(booth2json(booth))
-#   return json.dumps(ret)
-
-# def createBooth(info):
-#   booth = BoothInfo()
-#   booth.id = uuid.uuid4()
-#   booth.booth_name = info['booth_name']
-#   booth.loc_text = info['loc_text']
-#   booth.loc_lo = info['loc_lo']
-#   booth.loc_la = info['loc_la']
-#   booth.phone_numb = info['phone_numb']
-#   booth.email = info['email']
-#   booth.open_time = info['open_time']
-#   booth.category = info['category']
-#   booth.booth_owner = info['booth_owner']
-#   booth.booth_story = info['booth_story']
-#   booth.checkin_num = 0
-#   booth.create_time = datetime.now(pytz.utc)
-#   # booth.update_time = info.loc_text
-#   booth.disabled = False
-#   booth.save()
-#   ret = {"status": "ok", "msg": "Add successfully"}
-#   return json.dumps(ret)
-#
-# def thumbBooth():
-#   ret = {"rows": [], "total": 0, "msg": ""}
-#   return json.dumps(ret)
-
 def uploadImg():
   ret = {"rows": [], "total": 0, "msg": ""}
   return json.dumps(ret)

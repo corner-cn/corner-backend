@@ -1,4 +1,4 @@
-from models import BoothInfo
+from models import BoothInfo, BoothImages
 from utils.constants import BoothOperation
 from utils.location import get_reverse
 
@@ -18,7 +18,11 @@ class CornerBooth(BoothInfo):
         ret['create_time'] = ret['create_time'].strftime(time_fmt) if 'create_time' in ret and ret['create_time'] else None
         ret['update_time'] = ret['update_time'].strftime(time_fmt) if 'update_time' in ret and ret['update_time'] else None
         ret['_sa_instance_state'] = None
-        # TODO: image urls
+        ret['image_urls'] = []
+        # TODO: image utls compose
+        booth_imgs = BoothImages.all(booth_id=self.booth_id)
+        for booth_img in booth_imgs:
+            ret['image_urls'].append(booth_img.image_path)
         return ret
 
     @classmethod
