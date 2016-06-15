@@ -167,6 +167,7 @@ class Image(MethodView):
                 filename = img_file.filename
                 # Move the file form the temporal folder to the upload
                 # folder we setup
+                logger.info("current working dir {}".format(os.getcwd()))
                 img_file.save(os.path.join(UPLOAD_FOLDER, filename))
                 # Save the filename into a list, we'll use it later
                 filenames.append(filename)
