@@ -38,5 +38,6 @@ class BoothImageFlag(object):
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+IMAGE_DIR_PREFIX = '/opt/corner/src/'
 UPLOAD_FOLDER = 'static/'
 DOMAIN_NAME = "api.ijiejiao.cn"
