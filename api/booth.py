@@ -8,7 +8,8 @@ import sys
 from service import BoothService
 from utils.constants import QueryType, QueryParams
 from modules.corner_booth import CornerBooth
-from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag
+from modules.models import BoothImages
 
 logger = logging.getLogger(__name__)
 stream_handler = logging.StreamHandler(sys.stderr)
@@ -172,7 +173,6 @@ class Image(MethodView):
                 # Redirect the user to the uploaded_file route, which
                 # will basicaly show on the browser the uploaded file
         # Load an html page with a link to each uploaded file
-        from modules.models import BoothImages
         booth = CornerBooth.first(booth_id=id)
         if booth:
             booth_images = []
@@ -183,10 +183,10 @@ class Image(MethodView):
                     create_time=booth.create_time
                 )
                 booth_images.append(booth_image)
-            booth_images[0].flag = "MAJOR"
+            booth_images[0].flag = BoothImageFlag.DEFAULT
+            # TODO: generate small pic here.
 
         return json.dumps(ret)
-        # TODO: save images to disk and return URL to clients
 
 
     def get(self, id):
