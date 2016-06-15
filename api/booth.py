@@ -80,8 +80,11 @@ class Booths(MethodView):
         data = json.loads(request.data)
         logger.error("Query Booth list with params {}".format(data))
         my_position = data.get('my_position')
-        longitude = my_position.get('longitude')
-        latitude = my_position.get('latitude')
+        longitude = None
+        latitude = None
+        if my_position:
+            longitude = my_position.get('longitude')
+            latitude = my_position.get('latitude')
         query_type = data.get('query_type')
         query_params = data.get('query_params')
         ret = {"status": 0, "msg": "success", "data": []}
