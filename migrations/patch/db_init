@@ -1,5 +1,5 @@
 CREATE TABLE corner_booth_info (
-    id character varying(255) primary key,
+    id BIGSERIAL primary key,
     booth_id character varying(255),
     booth_name character varying(255),
     loc_text text,
@@ -24,6 +24,7 @@ CREATE TABLE corner_booth_info (
 );
 
 CREATE INDEX ix_corner_booth_info_id ON corner_booth_info USING btree(id);
+CREATE INDEX ix_corner_booth_info_booth_id ON corner_booth_info USING btree(booth_id);
 CREATE INDEX ix_corner_booth_info_booth_name ON corner_booth_info USING btree(booth_name);
 CREATE INDEX ix_corner_booth_info_location ON corner_booth_info USING btree(location_rd);
 CREATE INDEX ix_corner_booth_info_category ON corner_booth_info USING btree(category);

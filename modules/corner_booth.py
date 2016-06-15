@@ -1,6 +1,7 @@
 from models import BoothInfo, BoothImages
 from utils.constants import BoothOperation
 from utils.location import get_reverse
+from sqlalchemy import orm
 
 import uuid
 import datetime
@@ -9,6 +10,11 @@ class CornerBooth(BoothInfo):
 
     def __init__(self, **kw):
         BoothInfo.__init__(self, **kw)
+
+    @orm.reconstructor
+    def load_on_init(self, **kw):
+        BoothInfo.__init__(self, **kw)
+        return self
 
     def to_dict(self):
         # this is funny, we must read a attribute then __dict__ comes available, should be due to sqlalchemy lazy init.
@@ -27,43 +33,43 @@ class CornerBooth(BoothInfo):
 
     @classmethod
     def create_from_dict(cls, info_dict):
-        booth = BoothInfo.create(
-            booth_id = str(uuid.uuid4()),
-            booth_name = info_dict.get('booth_name'),
-            loc_text = info_dict.get('loc_text'),
-            loc_lo = info_dict.get('loc_lo'),
-            loc_la = info_dict.get('loc_la'),
-            phone_number = info_dict.get('phone_number'),
-            email = info_dict.get('email'),
-            open_time = info_dict.get('open_time'),
-            category = info_dict.get('category'),
-            booth_owner = info_dict.get('booth_owner'),
-            booth_story = info_dict.get('booth_story'),
-            check_in_num = 0,
-            priority = 0,
-            # TODO: timezone issue
-            create_time = datetime.datetime.utcnow(),
-            create_by = info_dict.get('create_by'),
-            disabled = False
-        )
-        # booth = cls()
-        # booth.booth_id = str(uuid.uuid4())
-        # booth.booth_name = info_dict.get('booth_name')
-        # booth.loc_text = info_dict.get('loc_text')
-        # booth.loc_lo = info_dict.get('loc_lo')
-        # booth.loc_la = info_dict.get('loc_la')
-        # booth.phone_number = info_dict.get('phone_number')
-        # booth.email = info_dict.get('email')
-        # booth.open_time = info_dict.get('open_time')
-        # booth.category = info_dict.get('category')
-        # booth.booth_owner = info_dict.get('booth_owner')
-        # booth.booth_story = info_dict.get('booth_story')
-        # booth.check_in_num = 0
-        # booth.priority = 0
-        # # TODO: timezone issue
-        # booth.create_time = datetime.datetime.utcnow()
-        # booth.create_by = info_dict.get('create_by')
-        # booth.disabled = False
+        # booth = BoothInfo.create(
+        #     booth_id = str(uuid.uuid4()),
+        #     booth_name = info_dict.get('booth_name'),
+        #     loc_text = info_dict.get('loc_text'),
+        #     loc_lo = info_dict.get('loc_lo'),
+        #     loc_la = info_dict.get('loc_la'),
+        #     phone_number = info_dict.get('phone_number'),
+        #     email = info_dict.get('email'),
+        #     open_time = info_dict.get('open_time'),
+        #     category = info_dict.get('category'),
+        #     booth_owner = info_dict.get('booth_owner'),
+        #     booth_story = info_dict.get('booth_story'),
+        #     check_in_num = 0,
+        #     priority = 0,
+        #     # TODO: timezone issue
+        #     create_time = datetime.datetime.utcnow(),
+        #     create_by = info_dict.get('create_by'),
+        #     disabled = False
+        # )
+        booth = cls()
+        booth.booth_id = str(uuid.uuid4())
+        booth.booth_name = info_dict.get('booth_name')
+        booth.loc_text = info_dict.get('loc_text')
+        booth.loc_lo = info_dict.get('loc_lo')
+        booth.loc_la = info_dict.get('loc_la')
+        booth.phone_number = info_dict.get('phone_number')
+        booth.email = info_dict.get('email')
+        booth.open_time = info_dict.get('open_time')
+        booth.category = info_dict.get('category')
+        booth.booth_owner = info_dict.get('booth_owner')
+        booth.booth_story = info_dict.get('booth_story')
+        booth.check_in_num = 0
+        booth.priority = 0
+        # TODO: timezone issue
+        booth.create_time = datetime.datetime.utcnow()
+        booth.create_by = info_dict.get('create_by')
+        booth.disabled = False
 
         location = get_reverse(booth.loc_la, booth.loc_lo)
         if location:

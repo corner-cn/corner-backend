@@ -28,13 +28,11 @@ class BoothService(object):
 
     @staticmethod
     def by_recommendation():
-        filter_query = CornerBooth.all()
-        return BoothService.order_by_flag(SpecialFlag.CHECK_IN, filter_query=filter_query)
+        return BoothService.order_by_flag(SpecialFlag.CHECK_IN, filter_query=None)
 
     @staticmethod
     def by_priority():
-        filter_query = CornerBooth.all()
-        return BoothService.order_by_flag(SpecialFlag.PRIORITY, filter_query=filter_query)
+        return BoothService.order_by_flag(SpecialFlag.PRIORITY, filter_query=None)
 
     @staticmethod
     def by_keyword(keyword):
@@ -92,7 +90,7 @@ class BoothService(object):
     @staticmethod
     def order_by_flag(special_flag, filter_query=None):
         if not filter_query:
-            return None
+            filter_query = CornerBooth.where(disabled=False)
         if special_flag == SpecialFlag.CHECK_IN:
             return filter_query.order_by(desc(CornerBooth.check_in_num))
         if special_flag == SpecialFlag.LATEST:
