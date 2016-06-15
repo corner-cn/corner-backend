@@ -71,7 +71,7 @@ class Booths(MethodView):
 
     def post(self):
         data = json.loads(request.data)
-        logger.info("Query Booth list with params {}".format(data))
+        logger.error("Query Booth list with params {}".format(data))
         my_position = data.get('my_position')
         longitude = my_position.get('longitude')
         latitude = my_position.get('latitude')
@@ -143,12 +143,14 @@ class Booths(MethodView):
 class Image(MethodView):
 
     def post(self):
+        from logging import DEBUG
+        logger.setLevel(DEBUG)
         ret = {"status": 0, "msg": "success", "data": []}
         print "upload files {}".format(request.files)
         uploaded_files = request.files.getlist("file[]")
         from flask import current_app
         current_app.logger.info("upload files {}".format(uploaded_files))
-        print ("upload files {}".format(uploaded_files))
+        # print ("upload files {}".format(uploaded_files))
         filenames = []
         for file in uploaded_files:
             # Check if the file is one of the allowed types/extensions
