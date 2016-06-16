@@ -189,7 +189,7 @@ class Image(MethodView):
                 file_dir = os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth.booth_id)
                 file_path = os.path.join(file_dir, filename)
                 if not os.path.exists(file_dir):
-                    os.makedirs(file_path)
+                    os.makedirs(file_dir)
                 logger.info("file path is {}".format(file_path))
                 img_file.save(file_path)
                 # Save the filename into a list, we'll use it later
