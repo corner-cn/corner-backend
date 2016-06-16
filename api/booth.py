@@ -8,7 +8,7 @@ import sys
 from service import BoothService
 from utils.constants import QueryType, QueryParams
 from modules.corner_booth import CornerBooth
-from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag, IMAGE_DIR_PREFIX
+from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag, IMAGE_DIR_PREFIX, Category
 from modules.models import BoothImages
 
 logger = logging.getLogger(__name__)
@@ -123,7 +123,7 @@ class Booths(MethodView):
             order_by = query_params.get(QueryParams.ORDER_BY)
 
             booth_query = booth_service.all()
-            if category:
+            if category and category != Category.ALL:
                 booth_query = booth_service.by_category(category)
 
             if distance:
