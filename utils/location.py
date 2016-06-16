@@ -33,7 +33,7 @@ class GeoApi():
         return self._run('geoadd', *args)
 
     def georadius(self, *args):
-        logger.info("running geo radius with args {}".format(*args))
+        logger.info("running geo radius with args {}".format(args))
         return self._run('georadius', *args)
 
     def georadiusbymember(self, *args):
