@@ -35,7 +35,7 @@ class Booth(MethodView):
             logger.info("Create booth with params {}".format(booth_info))
             booth = CornerBooth.create_from_dict(info_dict=booth_info)
             if booth.loc_la and booth.loc_lo:
-                BoothService.insertBoothGeo(booth.id, booth.loc_la, booth.loc_lo)
+                BoothService.geo_add(booth.id, booth.loc_lo, booth.loc_la)
             return json.dumps(ret)
         else:
             booth_op = json.loads(request.data)
@@ -65,14 +65,16 @@ class Booth(MethodView):
         return json.dumps(ret)
 
     def delete(self, id):
-        # TODO: need some validation and expiration token here.
-        if id is None:
-            pass
-        else:
-            booth = CornerBooth.first(booth_id=id)
-            booth.disable()
-        ret = {"status": 200}
+        ret = {"status": 0, "msg": "success", "data": []}
         return json.dumps(ret)
+        # Maybe later.
+        # if id is None:
+        #     pass
+        # else:
+        #     booth = CornerBooth.first(booth_id=id)
+        #     booth.disable()
+        # ret = {"status": 200}
+        # return json.dumps(ret)
 
 
 class Booths(MethodView):
@@ -136,8 +138,8 @@ class Booths(MethodView):
                 # distance will looks like 100, 200, 500, 2000... we need implement by_distance
                 # 100m 200m 500m ...
                 # boothGeos: [[boothId1, distance],[boothId2, distance]...]
-                boothGeos = dict(booth_service.getNearestBoothByLocation(booth_service.latitude, booth_service.longitude, distance))
-                booth_list = booth_service.by_distance(boothGeos.keys(), booth_query)
+                # boothGeos = dict(booth_service.getNearestBoothByLocation(booth_service.latitude, booth_service.longitude, distance))
+                booth_list = booth_service.by_distance(distance, booth_query)
             else:
                 booth_list = list(booth_query)
 
@@ -150,10 +152,10 @@ class Booths(MethodView):
                 booth_info = booth.to_dict()
                 if booth.id in boothGeos:
                     booth_info['distance'] = boothGeos[booth.id]
-                else
-                    distance = booth_service.get_distance(booth.loc_la, booth.loc_lo)    
+                else:
+                    distance = booth_service.get_distance(booth.booth_id)
                     booth_info['distance'] = distance
-                ret["data"].append(booth.to_dict())
+                ret["data"].append(booth_info)
 
         else:
             msg = "Invalid query type {}".format(query_type)
@@ -221,7 +223,6 @@ class Category(MethodView):
 
     def get(self):
         # TODO: get category list.
-        # TODO: define category in backend
         pass
 
 

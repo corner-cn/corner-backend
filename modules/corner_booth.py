@@ -5,6 +5,7 @@ from sqlalchemy import orm
 
 import uuid
 import datetime
+from pytz import timezone
 
 from utils.common import gen_image_url
 
@@ -58,7 +59,6 @@ class CornerBooth(BoothInfo):
         #     booth_story = info_dict.get('booth_story'),
         #     check_in_num = 0,
         #     priority = 0,
-        #     # TODO: timezone issue
         #     create_time = datetime.datetime.utcnow(),
         #     create_by = info_dict.get('create_by'),
         #     disabled = False
@@ -77,8 +77,8 @@ class CornerBooth(BoothInfo):
         booth.booth_story = info_dict.get('booth_story')
         booth.check_in_num = 0
         booth.priority = 0
-        # TODO: timezone issue
-        booth.create_time = datetime.datetime.utcnow()
+        eastern = timezone('Asia/Chongqing')
+        booth.create_time = datetime.datetime.now(eastern)
         booth.create_by = info_dict.get('create_by')
         booth.disabled = False
 

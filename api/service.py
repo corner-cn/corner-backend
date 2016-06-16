@@ -1,5 +1,6 @@
 import json
-from sqlalchemy import desc, and_, or_, in_
+from sqlalchemy import desc, and_, or_
+import uuid
 
 from utils.constants import SpecialFlag
 from utils.location import get_reverse, GeoApi
@@ -15,7 +16,6 @@ class BoothService(object):
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
-        # TODO: Need discuss with Dan Yun Whether Cell Phone can resolve this or not.
         location = get_reverse(self.latitude, self.longitude)
         self.city = None
         if location:
@@ -26,16 +26,13 @@ class BoothService(object):
         booth = CornerBooth.first(booth_id=id)
         return booth
 
-    @staticmethod
-    def by_recommendation():
-        return BoothService.order_by_flag(SpecialFlag.CHECK_IN, filter_query=None)
+    def by_recommendation(self):
+        return self.order_by_flag(SpecialFlag.CHECK_IN, filter_query=None)
 
-    @staticmethod
-    def by_priority():
-        return BoothService.order_by_flag(SpecialFlag.PRIORITY, filter_query=None)
+    def by_priority(self):
+        return self.order_by_flag(SpecialFlag.PRIORITY, filter_query=None)
 
-    @staticmethod
-    def by_keyword(keyword):
+    def by_keyword(self, keyword):
         filter_query = CornerBooth.where(disabled=False).filter(
             or_(
                 CornerBooth.booth_name.like('%{}%'.format(keyword)),
@@ -45,58 +42,62 @@ class BoothService(object):
         )
         return filter_query
 
-    @staticmethod
-    def by_distance(distance_ids, filter_query=None):
+    def by_distance(self, distance, filter_query=None):
         # Query distance ids first with redis geo
         # Then query booths by distance ids
+        nearby_booth_ids = BoothService.geo_redius(self.longitude, self.latitude, distance)
         if filter_query:
-            return filter_query.filter(
-                CornerBooth.id.in_(distance_ids)
+            return filter_query.filter_by(
+                CornerBooth.booth_id.in_(
+                    nearby_booth_ids
+                )
             )
         else:
-            return CornerBooth.all(
-                CornerBooth.id.in_(distance_ids)
+            return CornerBooth.where(
+                disabled=False
+            ).filter_by(
+                CornerBooth.booth_id.in_(
+                    nearby_booth_ids
+                )
             )
 
-    @staticmethod
-    def by_district(city, district, filter_query=None):
+    def by_district(self, city, district, filter_query=None):
         if filter_query:
             return filter_query.filter_by(
                 city=city,
                 district=district
             )
         else:
-            return CornerBooth.all(
+            return CornerBooth.where(
                 city=city,
-                district=district
+                district=district,
+                disabled=False
             )
 
-    @staticmethod
-    def by_business_district(city, business_district, filter_query=None):
+    def by_business_district(self, city, business_district, filter_query=None):
         if filter_query:
             return filter_query.filter_by(
                 city=city,
                 business_district=business_district
             )
         else:
-            return CornerBooth.all(
+            return CornerBooth.where(
                 city=city,
-                business_district=business_district
+                business_district=business_district,
+                disabled=False
             )
 
-    @staticmethod
-    def by_category(category, filter_query=None):
+    def by_category(self, category, filter_query=None):
         if filter_query:
             return filter_query.filter_by(
                 category=category
             )
         else:
-            return CornerBooth.all(
+            return CornerBooth.where(
                 category=category
             )
 
-    @staticmethod
-    def order_by_flag(special_flag, filter_query=None):
+    def order_by_flag(self, special_flag, filter_query=None):
         if not filter_query:
             filter_query = CornerBooth.where(disabled=False)
         if special_flag == SpecialFlag.CHECK_IN:
@@ -106,35 +107,27 @@ class BoothService(object):
         if special_flag == SpecialFlag.PRIORITY:
             return filter_query.order_by(CornerBooth.check_in_num)
 
-    @staticmethod
-    def by_create_time(city, business_district):
+    def by_create_time(self, city, business_district):
         pass
 
     @classmethod
-    def insertBoothGeo(cls, boothId, x, y):
-        return cls._geo.geoadd(cls._element, x, y, boothId)
+    def geo_add(cls, boothId, longitude, latitude):
+        return cls._geo.geoadd(cls._element, longitude, latitude, boothId)
 
     @classmethod
-    def getNearestBoothById(cls, boothId, scale=1000, unit='m', limit=50):
-        return cls._geo.georadiusbymember(cls._element, boothId, scale, unit, 'withdist', 'asc', 'count', limit)
+    def geo_redius(cls, longitude, latitude, scale=1000, unit='m', limit=50):
+        return cls._geo.georadius(cls._element, longitude, latitude, scale, unit, 'withdist', 'asc', 'count', limit)
 
     @classmethod
-    def getNearestBoothByLocation(cls, latitude, longitude, scale=1000, unit='m', limit=50):
-        return cls._geo.georadius(cls._element, latitude, longitude, scale, unit, 'withdist', 'asc', 'count', limit)
+    def geo_dist(cls, src_id, dst_id):
+        return cls._geo.geodist(cls._element, src_id, dst_id, 'm')
 
-    @classmethod
-    def get_distance(cls, target_la, target_lo):
-        # haversine Formula
-        if target_la and target_lo and self.longitude and self.latitude:
-            lon1, lat1, lon2, lat2 = map(radians, [self.longitude, self.latitude, target_la, target_lo])  
-  
-            dlon = lon2 - lon1   
-            dlat = lat2 - lat1   
-            a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2  
-            c = 2 * asin(sqrt(a))   
-            r = 6371 
-            return c * r * 1000   
-        return None
+    def get_distance(self, booth_id):
+        my_id = str(uuid.uuid4())
+        my_pos = BoothService.geo_add(my_id, self.longitude, self.latitude)
+        dist = BoothService.geo_dist(my_id, booth_id)
+        self._geo.zrem(self._element, my_pos)
+        return dist
 
     def all(self):
         if self.city:
