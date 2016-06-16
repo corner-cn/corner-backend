@@ -28,7 +28,6 @@ class CornerBooth(BoothInfo):
         ret['update_time'] = ret['update_time'].strftime(time_fmt) if 'update_time' in ret and ret['update_time'] else None
         ret['_sa_instance_state'] = None
         ret['image_urls'] = []
-        ret['image_urls'] = []
         booth_imgs = BoothImages.all(booth_id=self.booth_id)
         for booth_img in booth_imgs:
             img_url = gen_image_url(self.booth_id, booth_img.image_path)
@@ -41,6 +40,8 @@ class CornerBooth(BoothInfo):
                 else:
                     ret['image_urls'].append(img_url)
         ret['distance'] = '-'
+        if not ret['open_time']:
+            ret['open_time'] = '-'
         return ret
 
     @classmethod
