@@ -205,6 +205,7 @@ class Image(MethodView):
                 )
                 booth_images.append(booth_image)
             booth_images[0].flag = BoothImageFlag.DEFAULT
+            booth_images[0].save()
             # TODO: generate small pic here.
 
         return json.dumps(ret)
