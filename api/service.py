@@ -1,12 +1,21 @@
 import json
 from sqlalchemy import desc, and_, or_
 import uuid
+import logging
+import sys
 
 from utils.constants import SpecialFlag
 from utils.location import get_reverse, GeoApi
 from modules.corner_booth import CornerBooth
 from extensions import corner_redis
 
+
+logger = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler(sys.stderr)
+formatter = logging.Formatter('%(name)-12s %(asctime)s %(levelname)-8s %(message)s', '%a, %d %b %Y %H:%M:%S',)
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
+logger.setLevel(logging.DEBUG)
 
 class BoothService(object):
 
@@ -46,6 +55,7 @@ class BoothService(object):
         # Query distance ids first with redis geo
         # Then query booths by distance ids
         nearby_booth_ids = BoothService.geo_redius(self.longitude, self.latitude, distance)
+        logger.info("nearby booth ids should be {}".format(nearby_booth_ids))
         if filter_query:
             return filter_query.filter_by(
                 CornerBooth.booth_id.in_(
