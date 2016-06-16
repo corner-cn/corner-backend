@@ -35,7 +35,7 @@ class Booth(MethodView):
             logger.info("Create booth with params {}".format(booth_info))
             booth = CornerBooth.create_from_dict(info_dict=booth_info)
             if booth.loc_la and booth.loc_lo:
-                BoothService.geo_add(booth.id, booth.loc_lo, booth.loc_la)
+                BoothService.geo_add(booth.booth_id, booth.loc_lo, booth.loc_la)
             return json.dumps(ret)
         else:
             booth_op = json.loads(request.data)
@@ -45,6 +45,7 @@ class Booth(MethodView):
         return json.dumps(ret)
 
     def put(self, id):
+        # TODO: disable this
         ret = {"status": 0, "msg": "success", "data": []}
         uploaded_files = request.files.getlist("file[]")
         logger.info("upload files {}".format(uploaded_files))
