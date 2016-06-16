@@ -104,7 +104,7 @@ class Booths(MethodView):
                     if my_position:
                         logger.info("Getting distance between {} and {}".format(my_position, recommend.booth_id))
                         booth_info['distance'] = booth_service.get_distance(recommend.booth_id)
-                    ret["data"].append(recommend.to_dict())
+                    ret["data"].append(booth_info)
 
         elif query_type == QueryType.PRIORITY:
             priority = booth_service.by_priority().first()
@@ -113,7 +113,7 @@ class Booths(MethodView):
                 if my_position:
                     logger.info("Getting distance between {} and {}".format(my_position, priority.booth_id))
                     booth_info['distance'] = booth_service.get_distance(priority.booth_id)
-                ret["data"].append(priority.to_dict())
+                ret["data"].append(booth_info)
 
         elif query_type == QueryType.KEYWORDS:
             keywords = query_params.get(QueryParams.KEYWORDS)

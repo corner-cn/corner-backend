@@ -141,7 +141,7 @@ class BoothService(object):
         try:
             if dist:
                 if float(dist) > 1000:
-                    dist_rd = float(dist) / 1000
+                    dist_rd = "%0.1f" %(float(dist) / 1000)
                     return "{} km".format(dist_rd)
                 else:
                     return int(dist)
