@@ -100,11 +100,19 @@ class Booths(MethodView):
             recommends = booth_service.by_recommendation()
             if recommends:
                 for recommend in list(recommends)[:3]:
+                    booth_info = recommend.to_dict()
+                    if my_position:
+                        logger.info("Getting distance between {} and {}".format(my_position, recommend.booth_id))
+                        booth_info['distance'] = booth_service.get_distance(recommend.booth_id)
                     ret["data"].append(recommend.to_dict())
 
         elif query_type == QueryType.PRIORITY:
             priority = booth_service.by_priority().first()
             if priority:
+                booth_info = priority.to_dict()
+                if my_position:
+                    logger.info("Getting distance between {} and {}".format(my_position, priority.booth_id))
+                    booth_info['distance'] = booth_service.get_distance(priority.booth_id)
                 ret["data"].append(priority.to_dict())
 
         elif query_type == QueryType.KEYWORDS:
@@ -112,7 +120,11 @@ class Booths(MethodView):
             for keyword in keywords:
                 booths = booth_service.by_keyword(keyword)
                 for booth in list(booths):
-                    ret["data"].append(booth.to_dict())
+                    booth_info = booth.to_dict()
+                    if my_position:
+                        logger.info("Getting distance between {} and {}".format(my_position, booth.booth_id))
+                        booth_info['distance'] = booth_service.get_distance(booth.booth_id)
+                    ret["data"].append(booth_info)
 
         elif query_type == QueryType.COMBINED:
             distance = query_params.get(QueryParams.DISTANCE)
