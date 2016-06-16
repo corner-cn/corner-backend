@@ -132,7 +132,6 @@ class Booths(MethodView):
             if order_by:
                 booth_query = booth_service.order_by_flag(order_by, booth_query)
 
-            booth_list = []
             boothGeos = {}
             if distance:
                 # distance will looks like 100, 200, 500, 2000... we need implement by_distance
@@ -150,11 +149,9 @@ class Booths(MethodView):
                 # Can we just give booths coordinates and display in client with map instead of computation in backend?
                 # Backend do not have street info
                 booth_info = booth.to_dict()
-                if booth.id in boothGeos:
-                    booth_info['distance'] = boothGeos[booth.id]
-                else:
-                    distance = booth_service.get_distance(booth.booth_id)
-                    booth_info['distance'] = distance
+                if my_position:
+                    booth_info['distance'] = booth_service.get_distance(booth.booth_id)
+
                 ret["data"].append(booth_info)
 
         else:

@@ -40,7 +40,7 @@ class CornerBooth(BoothInfo):
                     ret['image_urls'].insert(0, img_url)
                 else:
                     ret['image_urls'].append(img_url)
-        ret['distance'] = None
+        ret['distance'] = '-'
         return ret
 
     @classmethod
