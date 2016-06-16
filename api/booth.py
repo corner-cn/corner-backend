@@ -151,6 +151,7 @@ class Booths(MethodView):
                 # Backend do not have street info
                 booth_info = booth.to_dict()
                 if my_position:
+                    logger.info("Getting distance between {} and {}".format(my_position, booth.booth_id))
                     booth_info['distance'] = booth_service.get_distance(booth.booth_id)
 
                 ret["data"].append(booth_info)
