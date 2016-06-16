@@ -187,6 +187,7 @@ class Image(MethodView):
                 logger.info("current working dir {}".format(os.getcwd()))
                 # TODO: rename files here.
                 file_path = os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth.booth_id, "/", filename)
+                logger.info("file path is {}".format(file_path))
                 img_file.save(file_path)
                 # Save the filename into a list, we'll use it later
                 filenames.append(filename)
@@ -195,7 +196,7 @@ class Image(MethodView):
             booth_images = []
             for image in filenames:
                 booth_image = BoothImages.create(
-                    booth_id=booth.id,
+                    booth_id=booth.booth_id,
                     image_path=image,
                     create_time=booth.create_time
                 )
