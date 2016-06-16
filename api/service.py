@@ -54,10 +54,11 @@ class BoothService(object):
     def by_distance(self, distance, filter_query=None):
         # Query distance ids first with redis geo
         # Then query booths by distance ids
-        nearby_booth_ids = BoothService.geo_redius(self.longitude, self.latitude, distance)
+        nearby_booths = BoothService.geo_redius(self.longitude, self.latitude, distance)
+        nearby_booth_ids = [booth[0] for booth in nearby_booths]
         logger.info("nearby booth ids should be {}".format(nearby_booth_ids))
         if filter_query:
-            return filter_query.filter_by(
+            return filter_query.filter(
                 CornerBooth.booth_id.in_(
                     nearby_booth_ids
                 )
@@ -65,7 +66,7 @@ class BoothService(object):
         else:
             return CornerBooth.where(
                 disabled=False
-            ).filter_by(
+            ).filter(
                 CornerBooth.booth_id.in_(
                     nearby_booth_ids
                 )
