@@ -22,7 +22,7 @@ class QueryParams(object):
     CATEGORY = "category"
 
 
-class Category(object):
+class BoothCategory(object):
     ALL = "all"
     GROCERY = "grocery"
     SNACKS = "snacks"

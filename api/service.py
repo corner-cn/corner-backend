@@ -138,7 +138,17 @@ class BoothService(object):
         my_pos = BoothService.geo_add(my_id, self.longitude, self.latitude)
         dist = BoothService.geo_dist(my_id, booth_id)
         self._geo.zrem(self._element, my_pos)
-        return dist
+        try:
+            if dist:
+                if float(dist) > 1000:
+                    dist_rd = float(dist) / 1000
+                    return "{} km".format(dist_rd)
+                else:
+                    return int(dist)
+            return dist
+        except Exception as e:
+            return None
+
 
     def all(self):
         if self.city:
