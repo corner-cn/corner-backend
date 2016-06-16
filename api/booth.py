@@ -89,6 +89,7 @@ class Booths(MethodView):
         if my_position:
             longitude = my_position.get('longitude')
             latitude = my_position.get('latitude')
+        logger.info("longitude is {} while latitude is {}".format(longitude, latitude))
         query_type = data.get('query_type')
         query_params = data.get('query_params')
         ret = {"status": 0, "msg": "success", "data": []}
