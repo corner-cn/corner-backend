@@ -1,5 +1,14 @@
 from geopy.geocoders import Nominatim
 
+import logging
+import sys
+
+logger = logging.getLogger(__name__)
+stream_handler = logging.StreamHandler(sys.stderr)
+formatter = logging.Formatter('%(name)-12s %(asctime)s %(levelname)-8s %(message)s', '%a, %d %b %Y %H:%M:%S',)
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
+logger.setLevel(logging.DEBUG)
 
 def get_reverse(latitude, longitude):
     geolocator = Nominatim()
@@ -24,6 +33,7 @@ class GeoApi():
         return self._run('geoadd', *args)
 
     def georadius(self, *args):
+        logger.info("running geo radius with args {}".format(*args))
         return self._run('georadius', *args)
 
     def georadiusbymember(self, *args):
