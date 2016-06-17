@@ -33,7 +33,7 @@ class Booth(MethodView):
         if id is None:
             booth_info = json.loads(request.data)
             logger.info("Create booth with params {}".format(booth_info))
-            booth = CornerBooth.cla(info_dict=booth_info)
+            booth = CornerBooth.create_from_dict(info_dict=booth_info)
             if booth.loc_la and booth.loc_lo:
                 BoothService.geo_add(booth.booth_id, booth.loc_lo, booth.loc_la)
                 ret["data"].append(booth.to_dict())
