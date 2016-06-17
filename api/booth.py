@@ -210,7 +210,7 @@ class Image(MethodView):
         default_img.flag = BoothImageFlag.DEFAULT
         default_img.save()
 
-        thumbnail_img = ImageService.mk_thumbnail(id, default_img.image)
+        thumbnail_img = ImageService.mk_thumbnail(id, default_img.image_path)
         booth_image = BoothImages.create(
             booth_id=booth.booth_id,
             image_path=thumbnail_img,
