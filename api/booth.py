@@ -36,6 +36,7 @@ class Booth(MethodView):
             booth = CornerBooth.create_from_dict(info_dict=booth_info)
             if booth.loc_la and booth.loc_lo:
                 BoothService.geo_add(booth.booth_id, booth.loc_lo, booth.loc_la)
+                ret["data"].append(booth.to_dict())
             return json.dumps(ret)
         else:
             booth_op = json.loads(request.data)
