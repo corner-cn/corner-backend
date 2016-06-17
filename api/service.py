@@ -232,7 +232,7 @@ class ImageService(object):
                 thumbnail_path = ImageService.get_image_work_dir(booth_id)
                 logger.info("saving thumbnail file to {}".format(thumbnail_filename))
                 newim.save("{}/{}".format(thumbnail_path, thumbnail_filename), "JPEG")
-                return "{}.{}".format(thumbnail_filename, "JPEG")
+                return thumbnail_filename
         except IOError as e:
             print "error due to {}".format(unicode(e))
             return None
