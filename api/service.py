@@ -228,8 +228,6 @@ class ImageService(object):
                 newim = im.crop((0, 0, newwidth, newheight))
                 newim.thumbnail((400, 300))
                 extension = filename.rsplit('.', 1)[-1]
-                import pdb
-                pdb.set_trace()
                 thumbnail_filename = ImageService.gen_filename(extension="JPEG")
                 thumbnail_path = ImageService.get_image_work_dir(booth_id)
                 logger.info("saving thumbnail file to {}".format(thumbnail_filename))
