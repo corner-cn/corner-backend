@@ -5,7 +5,7 @@ import logging
 import os
 import sys
 
-from service import BoothService
+from service import BoothService, ImageService
 from utils.constants import QueryType, QueryParams
 from modules.corner_booth import CornerBooth
 from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag, IMAGE_DIR_PREFIX
@@ -193,26 +193,11 @@ class Image(MethodView):
         logger.info("files hash {}".format(files_hash))
         filenames = []
         for img_file in files_hash.values():
-            logger.info("processing file {}".format(img_file))
-            # Check if the file is one of the allowed types/extensions
-            if img_file and allowed_file(img_file.filename):
-                # Make the filename safe, remove unsupported chars
-                filename = img_file.filename
-                # Move the file form the temporal folder to the upload
-                # folder we setup
-                logger.info("current working dir {}".format(os.getcwd()))
-                # TODO: rename files here.
-                file_dir = os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth.booth_id)
-                file_path = os.path.join(file_dir, filename)
-                if not os.path.exists(file_dir):
-                    os.makedirs(file_dir)
-                logger.info("file path is {}".format(file_path))
-                img_file.save(file_path)
-                # Save the filename into a list, we'll use it later
-                filenames.append(filename)
+            filename = ImageService.upload(img_file, id)
+            filenames.append(filename)
 
+        booth_images = []
         if booth:
-            booth_images = []
             for image in filenames:
                 booth_image = BoothImages.create(
                     booth_id=booth.booth_id,
@@ -220,9 +205,13 @@ class Image(MethodView):
                     create_time=booth.create_time
                 )
                 booth_images.append(booth_image)
-            booth_images[0].flag = BoothImageFlag.DEFAULT
-            booth_images[0].save()
-            # TODO: generate small pic here.
+
+        default_img = booth_images[0]
+        default_img.flag = BoothImageFlag.DEFAULT
+        default_img.save()
+
+        thumbnail_img = ImageService.mk_thumbnail(id, default_img.image)
+        # TODO: generate small pic here.
 
         return json.dumps(ret)
 
@@ -244,8 +233,4 @@ class Category(MethodView):
         pass
 
 
-# For a given file, return whether it's an allowed type or not
-def allowed_file(filename):
-    return '.' in filename and \
-           (filename.rsplit('.', 1)[-1] in ALLOWED_EXTENSIONS or
-            filename.rsplit('.', 1)[-1].lower() in ALLOWED_EXTENSIONS)
+
