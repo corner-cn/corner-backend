@@ -211,7 +211,12 @@ class Image(MethodView):
         default_img.save()
 
         thumbnail_img = ImageService.mk_thumbnail(id, default_img.image)
-        # TODO: generate small pic here.
+        booth_image = BoothImages.create(
+            booth_id=booth.booth_id,
+            image_path=thumbnail_img,
+            create_time=booth.create_time,
+            flag=BoothImageFlag.THUMBNAIL
+        )
 
         return json.dumps(ret)
 
