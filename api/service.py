@@ -141,7 +141,7 @@ class BoothService(object):
         my_id = str(uuid.uuid4())
         my_pos = BoothService.geo_add(my_id, self.longitude, self.latitude)
         dist = BoothService.geo_dist(my_id, booth_id)
-        self._geo.zrem(self._element, my_pos)
+        self._geo.zrem(self._element, booth_id)
         try:
             if dist:
                 if float(dist) > 1000:

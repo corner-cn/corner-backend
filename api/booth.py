@@ -49,22 +49,6 @@ class Booth(MethodView):
     def put(self, id):
         # TODO: disable this
         ret = {"status": 0, "msg": "success", "data": []}
-        uploaded_files = request.files.getlist("file[]")
-        logger.info("upload files {}".format(uploaded_files))
-        filenames = []
-        for file in uploaded_files:
-            # Check if the file is one of the allowed types/extensions
-            if file and allowed_file(file.filename):
-                # Make the filename safe, remove unsupported chars
-                filename = file.filename
-                # Move the file form the temporal folder to the upload
-                # folder we setup
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                # Save the filename into a list, we'll use it later
-                filenames.append(filename)
-                # Redirect the user to the uploaded_file route, which
-                # will basicaly show on the browser the uploaded file
-        # Load an html page with a link to each uploaded file
         return json.dumps(ret)
 
     def delete(self, id):
@@ -220,7 +204,6 @@ class Image(MethodView):
         )
 
         return json.dumps(ret)
-
 
     def get(self, id):
         # NOTE: This method seems no need to implement now.
