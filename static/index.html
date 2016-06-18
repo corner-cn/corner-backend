@@ -30,6 +30,7 @@
     }
 
     .logo .text {
+      margin-left: 20px;
       margin-top: 30px;
     }
 
@@ -43,7 +44,7 @@
     }
 
     .href {
-      margin: 10px;
+      margin: 30px;
       cursor: pointer;
     }
 
@@ -56,6 +57,13 @@
     }
 
     .font {
+      color: #c8c8c8;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      font-size: x-large;
+    }
+
+    .fontfooter {
       color: #c8c8c8;
       font-family: Arial, Helvetica, sans-serif;
       font-weight: bold;
@@ -86,19 +94,21 @@
       <img class='left_ball' src="images/right.png" width='500px' height='250px'>
     </div>
     <div class='footer'>
-      <font class="font">Copyright The Corner 2016</font>
+      <font class="fontfooter">Copyright The Corner 2016</font>
     </div>
   </div>
 
   <script type="text/javascript">
     var len = screen.width
-    var elements = document.getElementsByClassName('midpic')
-    for (var i in elements) {
-      if (len < 500) {
-        console.log('less')
-        elements[i].style['margin-left'] = '15vw'  
+    
+    if (len < 500) {
+      var elements = document.getElementsByClassName('midpic')
+      for (var i in elements) {
+        if (elements[i].style) elements[i].style['margin-left'] = '15vw'
       }
+      var fonts = document.getElementsByClassName('font')
     }
+    
   </script>
 </body>
 </html>
