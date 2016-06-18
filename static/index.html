@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>Corner - Life is hard but not around</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  </head>
+  <style type="text/css">
+    body {
+      background: url("images/background.png");
+      background-repeat: repeat;
+    }
+
+    .left_ball {
+      margin-top: 150px;
+      margin-left: 100px;
+    }
+
+    .midpic {
+      width: 50%; 
+      float: left;
+    }
+
+    .logo .icon {
+      float: left;
+    }
+
+    .logo .text {
+      margin-top: 20px;
+      margin-left: 10px;
+    }
+
+    .link {
+      float: right;
+      margin: 20px 30px;
+    }
+
+    .href {
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 20px;
+      clear:both;
+      margin-left: 30px;
+    }
+
+    .font {
+      color: #c8c8c8;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+    }
+
+  </style>
+
+  <script type="text/javascript">
+    function downlaodApp() {
+      window.open('https://api.ijiejiao.cn/app/download.html')
+    }
+  </script>
+<body>
+  <div>
+    <div class='logo' style="position: absolute; left: 50px; top: 30px; ">
+      <div class='icon'><img class= "icon" src="images/heart.png" width='56px' height='79px' /></div>
+      <div class='icon text'><font class="font">街角</font></div>
+    </div>
+    <div class='link'>
+      <a class='href' onclick="downlaodApp()" ><font class="font">Download App</font></a>
+      <a class='href'><font class="font">About Us</font></a>
+    </div>
+    <div class='ball midpic'>
+      <img class='left_ball' src="images/left.png" width='80%' height='80%'>
+    </div>
+    <div class='text midpic'>
+      <img class='left_ball' src="images/right.png" width='80%' height='80%'>
+    </div>
+    <div class='footer'>
+      <font class="font">Copyright The Corner 2016</font>
+    </div>
+  </div>
+</body>
+</html>
