@@ -5,10 +5,10 @@ import logging
 import os
 import sys
 
-from service import BoothService
+from service import BoothService, ImageService
 from utils.constants import QueryType, QueryParams
 from modules.corner_booth import CornerBooth
-from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag, IMAGE_DIR_PREFIX, Category
+from utils.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, BoothImageFlag, IMAGE_DIR_PREFIX
 from modules.models import BoothImages
 
 logger = logging.getLogger(__name__)
@@ -36,33 +36,19 @@ class Booth(MethodView):
             booth = CornerBooth.create_from_dict(info_dict=booth_info)
             if booth.loc_la and booth.loc_lo:
                 BoothService.geo_add(booth.booth_id, booth.loc_lo, booth.loc_la)
+                ret["data"].append(booth.to_dict())
             return json.dumps(ret)
         else:
             booth_op = json.loads(request.data)
             operation = booth_op.get("operation")
             booth = CornerBooth.first(booth_id=id)
             booth.perform_ops(operation)
-        return json.dumps(ret)
+            ret["data"].append(booth.to_dict())
+            return json.dumps(ret)
 
     def put(self, id):
         # TODO: disable this
         ret = {"status": 0, "msg": "success", "data": []}
-        uploaded_files = request.files.getlist("file[]")
-        logger.info("upload files {}".format(uploaded_files))
-        filenames = []
-        for file in uploaded_files:
-            # Check if the file is one of the allowed types/extensions
-            if file and allowed_file(file.filename):
-                # Make the filename safe, remove unsupported chars
-                filename = file.filename
-                # Move the file form the temporal folder to the upload
-                # folder we setup
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                # Save the filename into a list, we'll use it later
-                filenames.append(filename)
-                # Redirect the user to the uploaded_file route, which
-                # will basicaly show on the browser the uploaded file
-        # Load an html page with a link to each uploaded file
         return json.dumps(ret)
 
     def delete(self, id):
@@ -100,19 +86,31 @@ class Booths(MethodView):
             recommends = booth_service.by_recommendation()
             if recommends:
                 for recommend in list(recommends)[:3]:
-                    ret["data"].append(recommend.to_dict())
+                    booth_info = recommend.to_dict()
+                    if my_position:
+                        logger.info("Getting distance between {} and {}".format(my_position, recommend.booth_id))
+                        booth_info['distance'] = booth_service.get_distance(recommend.booth_id)
+                    ret["data"].append(booth_info)
 
         elif query_type == QueryType.PRIORITY:
             priority = booth_service.by_priority().first()
             if priority:
-                ret["data"].append(priority.to_dict())
+                booth_info = priority.to_dict()
+                if my_position:
+                    logger.info("Getting distance between {} and {}".format(my_position, priority.booth_id))
+                    booth_info['distance'] = booth_service.get_distance(priority.booth_id)
+                ret["data"].append(booth_info)
 
         elif query_type == QueryType.KEYWORDS:
             keywords = query_params.get(QueryParams.KEYWORDS)
             for keyword in keywords:
                 booths = booth_service.by_keyword(keyword)
                 for booth in list(booths):
-                    ret["data"].append(booth.to_dict())
+                    booth_info = booth.to_dict()
+                    if my_position:
+                        logger.info("Getting distance between {} and {}".format(my_position, booth.booth_id))
+                        booth_info['distance'] = booth_service.get_distance(booth.booth_id)
+                    ret["data"].append(booth_info)
 
         elif query_type == QueryType.COMBINED:
             distance = query_params.get(QueryParams.DISTANCE)
@@ -123,7 +121,7 @@ class Booths(MethodView):
             order_by = query_params.get(QueryParams.ORDER_BY)
 
             booth_query = booth_service.all()
-            if category and category != Category.ALL:
+            if category and category != "all":
                 booth_query = booth_service.by_category(category)
 
             if distance:
@@ -175,31 +173,16 @@ class Image(MethodView):
             ret = {"status": -1, "msg": msg, "data": []}
             return json.dumps(msg)
 
-        logger.error("upload files {}".format(request.files))
+        logger.error("upload files with request {} and files {}".format(request.__dict__, request.files))
         files_hash = request.files.to_dict()
         logger.info("files hash {}".format(files_hash))
         filenames = []
         for img_file in files_hash.values():
-            logger.info("processing file {}".format(img_file))
-            # Check if the file is one of the allowed types/extensions
-            if img_file and allowed_file(img_file.filename):
-                # Make the filename safe, remove unsupported chars
-                filename = img_file.filename
-                # Move the file form the temporal folder to the upload
-                # folder we setup
-                logger.info("current working dir {}".format(os.getcwd()))
-                # TODO: rename files here.
-                file_dir = os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth.booth_id)
-                file_path = os.path.join(file_dir, filename)
-                if not os.path.exists(file_dir):
-                    os.makedirs(file_dir)
-                logger.info("file path is {}".format(file_path))
-                img_file.save(file_path)
-                # Save the filename into a list, we'll use it later
-                filenames.append(filename)
+            filename = ImageService.upload(img_file, id)
+            filenames.append(filename)
 
+        booth_images = []
         if booth:
-            booth_images = []
             for image in filenames:
                 booth_image = BoothImages.create(
                     booth_id=booth.booth_id,
@@ -207,12 +190,20 @@ class Image(MethodView):
                     create_time=booth.create_time
                 )
                 booth_images.append(booth_image)
-            booth_images[0].flag = BoothImageFlag.DEFAULT
-            booth_images[0].save()
-            # TODO: generate small pic here.
+
+        default_img = booth_images[0]
+        default_img.flag = BoothImageFlag.DEFAULT
+        default_img.save()
+
+        thumbnail_img = ImageService.mk_thumbnail(id, default_img.image_path)
+        booth_image = BoothImages.create(
+            booth_id=booth.booth_id,
+            image_path=thumbnail_img,
+            create_time=booth.create_time,
+            flag=BoothImageFlag.THUMBNAIL
+        )
 
         return json.dumps(ret)
-
 
     def get(self, id):
         # NOTE: This method seems no need to implement now.
@@ -231,8 +222,4 @@ class Category(MethodView):
         pass
 
 
-# For a given file, return whether it's an allowed type or not
-def allowed_file(filename):
-    return '.' in filename and \
-           (filename.rsplit('.', 1)[-1] in ALLOWED_EXTENSIONS or
-            filename.rsplit('.', 1)[-1].lower() in ALLOWED_EXTENSIONS)
+

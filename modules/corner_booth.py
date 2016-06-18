@@ -47,7 +47,7 @@ class CornerBooth(BoothInfo):
     @classmethod
     def create_from_dict(cls, info_dict):
         eastern = timezone('Asia/Chongqing')
-        booth = BoothInfo.create(
+        booth = CornerBooth.create(
             booth_id = str(uuid.uuid4()),
             booth_name = info_dict.get('booth_name'),
             loc_text = info_dict.get('loc_text'),

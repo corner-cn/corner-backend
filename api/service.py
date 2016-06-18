@@ -3,8 +3,12 @@ from sqlalchemy import desc, and_, or_
 import uuid
 import logging
 import sys
+import os
+from PIL import Image
+import random
+import string
 
-from utils.constants import SpecialFlag
+from utils.constants import SpecialFlag, IMAGE_DIR_PREFIX, UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from utils.location import get_reverse, GeoApi
 from modules.corner_booth import CornerBooth
 from extensions import corner_redis
@@ -137,8 +141,18 @@ class BoothService(object):
         my_id = str(uuid.uuid4())
         my_pos = BoothService.geo_add(my_id, self.longitude, self.latitude)
         dist = BoothService.geo_dist(my_id, booth_id)
-        self._geo.zrem(self._element, my_pos)
-        return dist
+        self._geo.zrem(self._element, my_id)
+        try:
+            if dist:
+                if float(dist) > 1000:
+                    dist_rd = "%0.1f" %(float(dist) / 1000)
+                    return "{} km".format(dist_rd)
+                else:
+                    return int(dist)
+            return dist
+        except Exception as e:
+            return None
+
 
     def all(self):
         if self.city:
@@ -152,11 +166,86 @@ class BoothService(object):
             )
 
 
-def uploadImg():
-  ret = {"rows": [], "total": 0, "msg": ""}
-  return json.dumps(ret)
+class ImageService(object):
 
-def getImageByBooth():
-  ret = {"rows": [], "total": 0, "msg": ""}
-  return json.dumps(ret)
+    @staticmethod
+    def get_image_work_dir(booth_id):
+        return os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth_id)
+
+    @staticmethod
+    def get_image_full_path(booth_id, filename):
+        file_dir = ImageService.get_image_work_dir(booth_id)
+        return os.path.join(file_dir, filename)
+
+    @staticmethod
+    def gen_filename(extension=None):
+        if extension:
+            return "{}.{}".format(random_word(15), extension)
+        else:
+            return random_word(15)
+
+    @classmethod
+    def upload(cls, img_file, booth_id):
+        logger.info("processing file {}".format(img_file))
+        if not img_file:
+            return None
+        if not allowed_file(img_file.filename):
+            return None
+
+        extension = img_file.filename.rsplit('.', 1)[-1]
+        filename = ImageService.gen_filename(extension)
+        logger.info("current working dir {}".format(os.getcwd()))
+        file_dir = os.path.join(IMAGE_DIR_PREFIX, UPLOAD_FOLDER, booth_id)
+        file_path = os.path.join(file_dir, filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        logger.info("file path is {}".format(file_path))
+        img_file.save(file_path)
+        return filename
+
+    @staticmethod
+    def mk_default(filename):
+        # NO need this feature currently
+        pass
+
+    @staticmethod
+    def mk_thumbnail(booth_id, filename):
+        # 4:3 -> 400 300
+        try:
+            logger.info("generating thumnail for file {}".format(filename))
+            file_full_path = ImageService.get_image_full_path(booth_id, filename)
+            with Image.open(file_full_path) as im:
+                logger.info("source image size: {}".format(im.size))
+                width, height = im.size
+                if int(width / 4) >= int(height / 3):
+                    newwidth = int(height / 3) * 4
+                    newheight = height
+                else:
+                    newwidth = width
+                    newheight = int(width / 4) * 3
+
+                logger.info("new size {} {}".format(newwidth, newheight))
+                newim = im.crop((0, 0, newwidth, newheight))
+                newim.thumbnail((400, 300))
+                extension = filename.rsplit('.', 1)[-1]
+                thumbnail_filename = ImageService.gen_filename(extension="JPEG")
+                thumbnail_path = ImageService.get_image_work_dir(booth_id)
+                logger.info("saving thumbnail file to {}".format(thumbnail_filename))
+                newim.save("{}/{}".format(thumbnail_path, thumbnail_filename), "JPEG")
+                return thumbnail_filename
+        except IOError as e:
+            print "error due to {}".format(unicode(e))
+            return None
+
+
+# For a given file, return whether it's an allowed type or not
+def allowed_file(filename):
+    return '.' in filename and \
+           (filename.rsplit('.', 1)[-1] in ALLOWED_EXTENSIONS or
+            filename.rsplit('.', 1)[-1].lower() in ALLOWED_EXTENSIONS)
+
+
+def random_word(length):
+    return ''.join(random.choice(string.lowercase) for i in range(length))
+
 
