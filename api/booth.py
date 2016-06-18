@@ -43,7 +43,8 @@ class Booth(MethodView):
             operation = booth_op.get("operation")
             booth = CornerBooth.first(booth_id=id)
             booth.perform_ops(operation)
-        return json.dumps(ret)
+            ret["data"].append(booth.to_dict())
+            return json.dumps(ret)
 
     def put(self, id):
         # TODO: disable this
