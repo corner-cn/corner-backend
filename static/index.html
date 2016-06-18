@@ -20,9 +20,9 @@
     }
 
     .midpic {
-      width: 400px; 
+      width: 40%; 
       float: left;
-      margin-right: 200px;
+      margin-left: 80px;
     }
 
     .logo .icon {
@@ -35,7 +35,6 @@
 
     .midtext {
       margin-top: 70px;
-      margin-left: 0px;
     }
 
     .link {
@@ -61,6 +60,7 @@
       font-family: Arial, Helvetica, sans-serif;
       font-weight: bold;
     }
+  }
 
   </style>
 
@@ -89,5 +89,16 @@
       <font class="font">Copyright The Corner 2016</font>
     </div>
   </div>
+
+  <script type="text/javascript">
+    var len = screen.width
+    var elements = document.getElementsByClassName('midpic')
+    for (var i in elements) {
+      if (len < 500) {
+        console.log('less')
+        elements[i].style['margin-left'] = '15vw'  
+      }
+    }
+  </script>
 </body>
 </html>
