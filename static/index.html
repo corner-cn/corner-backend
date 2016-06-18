@@ -50,15 +50,25 @@
 
     .mlink {
       position: fixed;
-      float: left;
+      /*float: left;*/
       top: 79vh;
-      left: 20vw;
+      width: 100%;
+      /*left: 29vw;*/
       /*margin: 35px 30px;*/
     }
 
     .mlink .href {
       margin: 30px;
       cursor: pointer;
+    }
+
+    .mlink .download {
+      margin-left: 34vw;
+    }
+
+    .mlink .about {
+      left: 29vw;
+      margin-left: 39vw;
     }
 
     .mlink .mfont {
@@ -101,7 +111,7 @@
     }
   </script>
 <body>
-  <div>
+  <div style="width: 100%">
     <div class='logo' style="position: absolute; left: 50px; top: 30px; ">
       <div class='icon'><img class= "icon" src="images/logo.png" width='125px' height='40px' /></div>
     </div>
@@ -121,8 +131,12 @@
     </div>
   </div>
   <div class='mlink' id='mlink'>
-      <a class='href' onclick="downlaodApp()" ><font class="mfont">Download App</font></a>
-      <a class='href'><font class="mfont">About Us</font></a>
+    <div>
+      <a class='href download' onclick="downlaodApp()" ><font class="mfont">Download App</font></a>
+    </div>
+    <div style="margin-top: 30px">
+      <a class='href about'><font class="mfont">About Us</font></a>
+    </div>
   </div>
   <script type="text/javascript">
     var len = screen.width
