@@ -40,12 +40,32 @@
 
     .link {
       float: right;
-      margin: 20px 30px;
+      margin: 35px 30px;
     }
 
-    .href {
+    .link .href {
       margin: 30px;
       cursor: pointer;
+    }
+
+    .mlink {
+      position: fixed;
+      float: left;
+      top: 79vh;
+      left: 20vw;
+      /*margin: 35px 30px;*/
+    }
+
+    .mlink .href {
+      margin: 30px;
+      cursor: pointer;
+    }
+
+    .mlink .mfont {
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      /*font-weight: bold;*/
+      font-size: 300%;
     }
 
     .footer {
@@ -75,7 +95,9 @@
 
   <script type="text/javascript">
     function downlaodApp() {
+      // itms-services://?action=download-manifest&url=https://api.ijiejiao.cn/app/manifest.plist
       window.open('https://api.ijiejiao.cn/app/download.html')
+      // window.open('itms-services://?action=download-manifest&url=https://api.ijiejiao.cn/app/manifest.plist')
     }
   </script>
 <body>
@@ -83,7 +105,7 @@
     <div class='logo' style="position: absolute; left: 50px; top: 30px; ">
       <div class='icon'><img class= "icon" src="images/logo.png" width='125px' height='40px' /></div>
     </div>
-    <div class='link'>
+    <div class='link' id='plink'>
       <a class='href' onclick="downlaodApp()" ><font class="font">Download App</font></a>
       <a class='href'><font class="font">About Us</font></a>
     </div>
@@ -91,13 +113,17 @@
       <img class='left_ball' src="images/left.png" width='500px' height='500px'>
     </div>
     <div class='midtext midpic'>
-      <img class='left_ball' src="images/right.png" width='500px' height='250px'>
+      <img class='left_ball' id='main_text' src="" width='500px' height='250px'>
     </div>
+
     <div class='footer'>
       <font class="fontfooter">Copyright The Corner 2016</font>
     </div>
   </div>
-
+  <div class='mlink' id='mlink'>
+      <a class='href' onclick="downlaodApp()" ><font class="mfont">Download App</font></a>
+      <a class='href'><font class="mfont">About Us</font></a>
+  </div>
   <script type="text/javascript">
     var len = screen.width
     
@@ -106,7 +132,13 @@
       for (var i in elements) {
         if (elements[i].style) elements[i].style['margin-left'] = '15vw'
       }
-      var fonts = document.getElementsByClassName('font')
+      document.getElementById('main_text').src = 'images/mobile.png'
+      document.getElementById('plink').style.display = 'none'
+      document.getElementById('mlink').style.display = 'block'
+    } else {
+      document.getElementById('main_text').src = 'images/right.png'
+      document.getElementById('mlink').style.display = 'none'
+      document.getElementById('plink').style.display = 'block'
     }
     
   </script>
