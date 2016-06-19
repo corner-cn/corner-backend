@@ -6,6 +6,7 @@
     <title>Corner - Life is hard but not around</title>
     <link rel="shortcut icon" href="image/1-1.png">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script type="text/javascript" src="javascript/jquery-3.0.0.min.js"></script>
   </head>
   <style type="text/css">
     body {
@@ -154,6 +155,31 @@
       document.getElementById('mlink').style.display = 'none'
       document.getElementById('plink').style.display = 'block'
     }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      }
+    }
+    
+    function showPosition(position) {
+      $.ajax({
+        type: "POST",
+        dataType: "jsonp",
+        jsonp: "callback",
+        // url: "https://www.ijiejiao.cn/stat/loheartbeat",
+        url: "/stat/loheartbeat",
+        data: JSON.stringify({ la: position.coords.latitude, lo: position.coords.longitude}),
+        contentType: "application/json; charset=utf-8",
+        // dataType: "json",
+        success: function(data){
+          console.log(data)
+        },
+        failure: function(errMsg) {}
+      });
+    }
+
+    getLocation()
     
   </script>
 </body>
